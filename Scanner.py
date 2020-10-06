@@ -79,7 +79,7 @@ class Scanner:
             return t
         
     def skipBlanks(self):
-        while (self.ch is ' ' or self.ch is CharIO.EL or self.ch == CharIO.TAB) :
+        while (self.ch == ' ' or self.ch == CharIO.EL or self.ch == CharIO.TAB) :
             self.ch = chario.getChar() 
     
     def getIdentifierOrKeyword(self):
@@ -88,7 +88,7 @@ class Scanner:
         idBuffer = []
         tokenBuffer = []
         self.token = Token(Token.ID)
-        if self.ch is '_':
+        if self.ch == '_':
             self.chario.putError("illegal leading '_")
         while True:
             self.ch = self.ch.upper()
@@ -96,24 +96,24 @@ class Scanner:
             tokenBuffer.append(ch)
             if i <= self.MAX_KEY_SPELLING:
                 idBuffer.append(self.ch)
-            if self.ch is '_':
+            if self.ch == '_':
                 self.ch = self.chario.getChar()
-                if self.ch is '_':
+                if self.ch == '_':
                     barCount = barCount + 1
-                if not (self.ch.isdigit() or self.ch.isalpha()) and self.ch is not '_':
+                if not (self.ch.isdigit() or self.ch.isalpha()) and self.ch != '_':
                     self.chario.putError("letter or digit expected after '_'")
             else:
                 self.ch = self.chario.getChar()
-            if self.ch.isdigit() or self.ch.isalpha() or self.ch is '_':
+            if self.ch.isdigit() or self.ch.isalpha() or self.ch == '_':
                 continue
             break
         if barCount > 0 :
             self.chario.putError("letter or digit expected after '-'")
         if i <= self.MAX_KEY_SPELLING :
             self.token = self.findToken(self.keywords, ''.join(idBuffer))
-            if self.token.code is Token.ERROR:
+            if self.token.code == Token.ERROR:
                 self.token.code = Token.ID
-        if self.token.code is Token.ID :
+        if self.token.code == Token.ID :
             self.token.string = ''.join(tokenBuffer)
     
     def getInteger(self) :
@@ -121,7 +121,7 @@ class Scanner:
 
         self.token = Token(Token.INT)
         self.getBasedInteger(10)
-        if self.ch is '#':
+        if self.ch == '#':
             base = self.token.integer
             if base < 2 and base > 16:
                 self.chario.putError('base must be between 2 and 16')
@@ -130,12 +130,26 @@ class Scanner:
             if not (self.ch.isdigit() or self.ch.isalpha()):
                 self.chario.putError("letter or digit expected after '#")
             self.getBasedInteger(base)
-            if self.ch is '#':
+            if self.ch == '#':
                 self.ch = self.chario.getChar()
             else:
                 self.chario.putError("'# expected")
 
     def getBasedInteger(self, base) :
-        base
+        barCount = 0
+        self.token.integer = 0
+        while self.ch.isdigit() or self.ch.isalpha() or self.ch == '_':
+            if self.ch == '_':
+                self.ch = self.chario.getChar()
+                if self.ch == '_':
+                    barCount += 1
+                if not (self.ch.isdigit() or self.ch.isalpha()) and self.ch != '_':
+                    self.chario.putError("letter or digit expected after '_'")
+            else :
+                self.token.integer = base * self.token.integer + self.charToInt(self.ch, base)
+                self.ch = self.chario.getChar()
+        if barCount > 0:
+            self.chario.putError("letter or digit expected after '_'")
+
 
         
