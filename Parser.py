@@ -11,7 +11,7 @@ class Parser:
     chario = CharIO()
     scanner = Scanner()
     token = Token()
-    # table = SymbolTable()
+
 
     addingOperator = {}
     multiplyingOperator = {}
@@ -28,12 +28,12 @@ class Parser:
         self.mode = mode
         self.initHandles()
         self.initTables()
-        token = self.scanner.nextToken()
+        self.token = self.scanner.nextToken()
 
     def reset(self):
         self.scanner.reset()
         self.initTable()
-        token = self.scanner.nextToken()
+        self.token = self.scanner.nextToken()
 
     def initHandles(self):
         self.addingOperator.add(Token.PLUS)
@@ -57,10 +57,70 @@ class Parser:
         self.statementHandles.add(Token.NULL)
         self.statementHandles.add(Token.WHILE)
 
+    #def acceptTole
+
+    #def setRole
+
+    #def appendEntry
+
     def accept(self, expected, errorMessage):
-        if(self.token.code != expected):
+        if self.token.code != expected:
             self.fatalError(errorMessage)
-        token = self.scanner.nextToken()
+        self.token = self.scanner.nextToken()
 
     def fatalError(self, errorMessage):
         self.chario.putError()
+        raise RuntimeError("Fatal Error")
+
+    #def initTable
+
+    def enterScope(self):
+        if self.mode == Parser.ROLE or self.mode == Parser.SCOPE:
+            self.table.enterscope()
+
+    def exitScope(self):
+        if self.mode == Parser.ROLE or self.mode == Parser.SCOPE:
+            self.table.exitScope(self.mode)
+
+    #def enterId
+
+    #def findId
+
+    def Parse(self):
+        self.subprogramBody()
+        self.accept(Token.EOF, "extra symbols after logical end of program")
+        self.exitScope()
+
+    #def subprogramBody
+
+    #def subprogramSpecification
+
+    def formalPart(self):
+        self.accept(Token.L_PAR, "'(' expected")
+        self.parameterSpecification()
+        while self.token.code == Token.SEMI:
+            self.token = self.scanner.nextToken()
+            self.parameterSpecification()
+        self.accept(Token.R_PAR, "')' expected")
+
+    #def parameterSpecification
+
+    def mode(self):
+        if self.token.code == Token.IN:
+            self.token = self.scanner.nextToken()
+            if self.token.code == Token.OUT:
+                self.token = self.scanner.nextTOken()
+        elif self.token.code == Token.OUT:
+            self.token = self.scanner.nextToken()
+
+    def declarativePart(self):
+        while self.token.code in self.basicDeclarationHandles:
+            self.basicDeclaration()
+
+    #def basicDeclaration
+
+    #def numberOrObjectDeclaration
+
+    #def typeDeclaration
+
+    #def typeDefinition
