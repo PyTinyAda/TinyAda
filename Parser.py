@@ -1,7 +1,8 @@
 from CharIO import CharIO
 from Scanner import Scanner
 from Token import Token
-
+from SymbolEntry import SymbolEntry
+from SymbolTable import SymbolTable
 
 class Parser:
     NONE = 0
@@ -57,11 +58,22 @@ class Parser:
         self.statementHandles.add(Token.NULL)
         self.statementHandles.add(Token.WHILE)
 
-    #def acceptTole
+    def acceptRole(self, s, expected, errorMessage):
+        if self.mode == Parser.Role:
+            if s is None or (s.role != SymbolEntry.NONE and s.role != expected):
+                self.chario.putError(errorMessage)
+            elif s is None or (s.role != SymbolEntry.NONE and not (s.role in expected)):
+                self.chario.putError(errorMessage)
 
-    #def setRole
+    def setRole(self, s, role):
+        if self.mode == Parser.ROLE and s is not None:
+            s.setRole(role)
 
-    #def appendEntry
+    def appendEntry(self, head, tail):
+        if self.mode == Parser.SCOPE or self.mode == Parser.ROLE:
+            if head is not None:
+                head.append(tail)
+
 
     def accept(self, expected, errorMessage):
         if self.token.code != expected:
@@ -72,7 +84,20 @@ class Parser:
         self.chario.putError()
         raise RuntimeError("Fatal Error")
 
-    #def initTable
+    def initTable(self):
+        if self.mode == Parser.ROLE or self.mode == Parser.SCOPE:
+            self.table = SymbolTable(self.chario)
+            self.enterScope()
+            entry = self.table.enterSymbol("BOOLEAN")
+            self.setRole(entry, SymbolEntry.TYPE)
+            entry = self.table.enterSymbol("CHAR")
+            self.setRole(entry, SymbolEntry.TYPE)
+            entry = self.table.enterSymbol("INTEGER")
+            self.setRole(entry, SymbolEntry.TYPE)
+            entry = self.table.enterSymbol("TRUE")
+            self.setRole(entry, SymbolEntry.CONST)
+            entry = self.table.enterSymbol("FALSE")
+            self.setRole(entry, SymbolEntry.CONST)
 
     def enterScope(self):
         if self.mode == Parser.ROLE or self.mode == Parser.SCOPE:
@@ -82,7 +107,15 @@ class Parser:
         if self.mode == Parser.ROLE or self.mode == Parser.SCOPE:
             self.table.exitScope(self.mode)
 
-    #def enterId
+    def enterId(self):
+        entry = None
+        if self.token.code == Token.ID:
+            if self.token.mode == Parser.SCOPE or self.mode == Parser.mode:
+                entry = self.table.enterSymbol(self.token.string)
+        else:
+            self.fatalError("identifier expected")
+        self.token = self.scanner.nextToken()
+        return entry
 
     #def findId
 
