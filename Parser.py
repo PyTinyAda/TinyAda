@@ -4,6 +4,7 @@ from Token import Token
 from SymbolEntry import SymbolEntry
 from SymbolTable import SymbolTable
 
+
 class Parser:
     NONE = 0
     SCOPE = 1
@@ -13,7 +14,6 @@ class Parser:
     scanner = Scanner()
     token = Token()
 
-
     addingOperator = {}
     multiplyingOperator = {}
     relationalOperator = {}
@@ -22,7 +22,7 @@ class Parser:
     leftNames = {}
     rightNames = {}
 
-    #constructor for the parser
+    # constructor for the parser
     def __init__(self, c, s, mode):
         self.chario = c
         self.scanner = s
@@ -74,7 +74,6 @@ class Parser:
             if head is not None:
                 head.append(tail)
 
-
     def accept(self, expected, errorMessage):
         if self.token.code != expected:
             self.fatalError(errorMessage)
@@ -117,16 +116,34 @@ class Parser:
         self.token = self.scanner.nextToken()
         return entry
 
-    #def findId
+    def findId(self):
+        entry = None
+        if self.token.code == Token.ID:
+            if self.mode == Parser.SCOPE or self.mode == Parser.ROLE:
+                entry = self.table.findSymbol(self.token.string)
+        else:
+            self.fatalError("identifier expected")
+        self.token = self.scanner.nextToken()
+        return entry
 
-    def Parse(self):
+    def parse(self):
         self.subprogramBody()
         self.accept(Token.EOF, "extra symbols after logical end of program")
         self.exitScope()
 
-    #def subprogramBody
+    def subprogramBody(self):
+        self.subprogramSpecification()
+        self.accept(Token.IS, "'is' expected")
+        self.declarativePart()
+        self.accept(Token.BEGIN, "'begin' expected")
+        self.sequenceOfStatements()
+        self.exitScope()
+        if self.token.code == Token.ID:
+            entry = self.findID()
+            self.acceptRole(entry, SymbolEntry.PROC, "must be a procedure name")
+        self.accept(Token.SEMI, "';' expected")
 
-    #def subprogramSpecification
+    # def subprogramSpecification(self):
 
     def formalPart(self):
         self.accept(Token.L_PAR, "'(' expected")
@@ -136,7 +153,7 @@ class Parser:
             self.parameterSpecification()
         self.accept(Token.R_PAR, "')' expected")
 
-    #def parameterSpecification
+    # def parameterSpecification
 
     def mode(self):
         if self.token.code == Token.IN:
@@ -150,10 +167,10 @@ class Parser:
         while self.token.code in self.basicDeclarationHandles:
             self.basicDeclaration()
 
-    #def basicDeclaration
+    # def basicDeclaration
 
-    #def numberOrObjectDeclaration
+    # def numberOrObjectDeclaration
 
-    #def typeDeclaration
+    # def typeDeclaration
 
-    #def typeDefinition
+    # def typeDefinition
