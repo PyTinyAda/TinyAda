@@ -8,6 +8,7 @@ class Scanner:
     keywords = {}
     singleOps = {}
     doubleOps = {}
+    tokenBuffer = []
     MAX_KEY_SPELLING = 9
     
     def __init__(self):
@@ -80,20 +81,20 @@ class Scanner:
         
     def skipBlanks(self):
         while (self.ch == ' ' or self.ch == CharIO.EL or self.ch == CharIO.TAB) :
-            self.ch = chario.getChar() 
+            self.ch = self.chario.getChar() 
     
     def getIdentifierOrKeyword(self):
         i = 0
         barCount = 0
         idBuffer = []
-        tokenBuffer = []
+        self.tokenBuffer = []
         self.token = Token(Token.ID)
         if self.ch == '_':
             self.chario.putError("illegal leading '_")
         while True:
             self.ch = self.ch.upper()
             i = i + 1
-            tokenBuffer.append(ch)
+            self.tokenBuffer.append(ch)
             if i <= self.MAX_KEY_SPELLING:
                 idBuffer.append(self.ch)
             if self.ch == '_':
@@ -114,7 +115,7 @@ class Scanner:
             if self.token.code == Token.ERROR:
                 self.token.code = Token.ID
         if self.token.code == Token.ID :
-            self.token.string = ''.join(tokenBuffer)
+            self.token.string = ''.join(self.tokenBuffer)
     
     def getInteger(self) :
         base = 16
@@ -150,6 +151,61 @@ class Scanner:
                 self.ch = self.chario.getChar()
         if barCount > 0:
             self.chario.putError("letter or digit expected after '_'")
+
+    def charToInt(self, ch, base):
+        digit = int(ch, base)
+        if digit == -1:
+            self.chario.putError("digit not in range of base")
+            digit = 0
+        return digit
+    
+    def getCharacter(self):
+        self.token = Token(Token.CHAR)
+        self.ch = self.chario.getChar()
+        if self.ch == CharIO.EL:
+            self.chario.putError("''' expected")
+            self.tokenBuffer.append(' ')
+            self.ch = self.chario.getChar()
+        else :
+            self.token.string = '' + self.ch
+            self.ch = self.chario.getChar()
+            if self.ch == '\'':
+                self.ch = self.chario.getChar()
+            else :
+                self.chario.putError("''' expected")
+    
+    def getDoubleOp(self):
+        self.tokenBuffer = []
+        self.tokenBuffer.append(self.ch)
+        self.ch = self.chario.getChar()
+        self.tokenBuffer.append(self.ch)
+        self.token = self.findTokenfindTokken(self.doubleOps, ''.join(self.tokenBuffer))
+        if self.token.code != Token.ERROR:
+            self.ch = self.chario.getChar()
+
+    def getSingleOp(self):
+        self.token = self.findToken(self.singleOps, "" + self.tokenBuffer[0])
+
+    def nextToken(self):
+        while True:
+            self.skipBlanks()
+            if self.ch.isalpha() or self.ch == '_':
+                self.getIdentifierOrKeyword()
+            elif self.ch.isdigit():
+                self.getInteger()
+            elif self.ch == '\'' :
+                self.getCharacter()
+            elif self.ch == CharIO.EF :
+                self.token = Token(Token.EOF)
+            else :
+                self.getDoubleOp()
+                if self.token.code == Token.ERROR :
+                    self.getSingleOp()
+                    if self.token.code == Token.ERROR:
+                        self.chario.putError("unrecognized symbol")
+            if self.token.code == Token.ERROR:
+                continue
+            return self.token
 
 
         
