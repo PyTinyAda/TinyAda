@@ -1,16 +1,14 @@
-import Chario
-import Scanner
-import Token
-import SymbolTable
+from CharIO import CharIO
+from Scanner import Scanner
+from Token import Token
 
-# all methods and variables have the same name as reference implementation
 
 class Parser:
     NONE = 0
     SCOPE = 1
     ROLE = 2
 
-    chario = Chario()
+    chario = CharIO()
     scanner = Scanner()
     token = Token()
     # table = SymbolTable()
@@ -58,8 +56,11 @@ class Parser:
         self.statementHandles.add(Token.LOOP)
         self.statementHandles.add(Token.NULL)
         self.statementHandles.add(Token.WHILE)
-        #self.leftNames.add(SymbolEntry.PARAM)
-        #self.leftnames.add(SymbolEntry.VAR)
-        #self.rightnames.add(SymbolEntry.CONST)
 
-    def acceptRole():
+    def accept(self, expected, errorMessage):
+        if(self.token.code != expected):
+            self.fatalError(errorMessage)
+        token = self.scanner.nextToken()
+
+    def fatalError(self, errorMessage):
+        self.chario.putError()
