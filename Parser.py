@@ -153,7 +153,13 @@ class Parser:
             self.parameterSpecification()
         self.accept(Token.R_PAR, "')' expected")
 
-    # def parameterSpecification
+    def parameterSpecification(self):
+        list = self.identifierList()
+        self.setRole(list, SymbolEntry.PARAM)
+        self.accept(Token.COLON, "':' expected")
+        self.mode()
+        entry = self.findID()
+        self.acceptRole(entry, SymbolEntry.TYPE, "must be a type name")
 
     def mode(self):
         if self.token.code == Token.IN:
@@ -167,9 +173,28 @@ class Parser:
         while self.token.code in self.basicDeclarationHandles:
             self.basicDeclaration()
 
-    # def basicDeclaration
+    def basicDeclaration(self):
+        if self.token.code == Token.ID:
+            self.numberOrObjectDeclaration()
+        elif self.token.code == Token.TYPE:
+            self.typeDeclaration()
+        elif self.token.code == Token.PROC:
+            self.subprogramBody()
+        else:
+            self.fatalError("error in declaration part")
 
-    # def numberOrObjectDeclaration
+    def numberOrObjectDeclaration(self):
+        list = self.identifierList()
+        self.accept(Token.COLON, "':' expected")
+        if self.token.code == Token.CONST:
+            self.setRole(list, SymbolEntry.CONST)
+            self.token = self.scanner.nextToken()
+            self.accept(Token.GETS, "':=' expected")
+            self.expression()
+        else:
+            self.setRole(list, SymbolEntry.VAR)
+            self.typeDefinition()
+        self.accept(Token.SEMI, "';' expected")
 
     # def typeDeclaration
 
