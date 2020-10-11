@@ -57,9 +57,9 @@ class Token:
     string = ""
 
     def Token(self, newCode):
-        code = newCode
-        integer = 0
-        string = ""
+        self.code = newCode
+        self.integer = 0
+        self.string = ""
 
     def toString(self):
         s = "Code    = " + self.CODES[self.code]
