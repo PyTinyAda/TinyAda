@@ -26,7 +26,7 @@ class CharIO:
         # modification needed.
         self.filename = stream  # how is 'stream' type used in main function exatly? I assumed 'stream' is a file name
         self.terminalBased = True
-        self.readFile(stream)
+        self.readFile(self.filename)
         self.reset()
 
     def reset(self):
