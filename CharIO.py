@@ -19,6 +19,7 @@ class CharIO:
     # Constructor
     
     def __init__(self): #modification needed
+        self.terminalBased = True
         self.reset()
         
     def __init__(self, stream):
