@@ -22,7 +22,7 @@ class TerminalApp:
         self.testParser()
 
     chario = CharIO(stream)
-    scanner = Scanner()
+    scanner = Scanner(chario)
     parser = Parser()
 
     def testChario(self):
