@@ -17,7 +17,7 @@ class CharIO:
     data = []
 
     # Constructor
-    def Chario(self, stream):
+    def __init__(self, stream):
         # modification needed.
         self.filename = stream  # how is 'stream' type used in main function exatly? I assumed 'stream' is a file name
         self.terminalBased = True
