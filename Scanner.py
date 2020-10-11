@@ -11,15 +11,12 @@ class Scanner:
     tokenBuffer = []
     MAX_KEY_SPELLING = 9
     
-    def __init__(self):
+    def __init__(self, c):
         self.ch = ''
         self.keywords = {}
         self.singleOps = {}
         self.doubleOps = {}
-
-    def scanner(self, c):
-        self.chario = c
-
+        self.chario = CharIO(c)
 
     def reset(self):
         self.chario.reset()
