@@ -30,7 +30,7 @@ class CharIO:
         self.lineNumber = 0
         self.line = ""
 
-    def print(self):
+    def print(self, s):
         if self.terminalBased:
             print(s)
 

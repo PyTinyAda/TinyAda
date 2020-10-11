@@ -33,7 +33,7 @@ class Parser:
 
     def reset(self):
         self.scanner.reset()
-        self.initTable()
+        #self.initTable()
         self.token = self.scanner.nextToken()
 
     def initHandles(self):
