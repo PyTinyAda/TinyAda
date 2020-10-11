@@ -12,11 +12,11 @@ class Scanner:
     MAX_KEY_SPELLING = 9
     
     def __init__(self, c):
-        self.ch = ''
-        self.keywords = {}
-        self.singleOps = {}
-        self.doubleOps = {}
-        self.chario = CharIO(c)
+        self.chario = c
+        self.initKeywords()
+        self.initSingleOps()
+        self.initDoubleOps()
+        self.ch = self.chario.getChar()
 
     def reset(self):
         self.chario.reset()
