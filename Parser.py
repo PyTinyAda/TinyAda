@@ -165,7 +165,7 @@ class Parser:
         if self.token.code == Token.IN:
             self.token = self.scanner.nextToken()
             if self.token.code == Token.OUT:
-                self.token = self.scanner.nextTOken()
+                self.token = self.scanner.nextToken()
         elif self.token.code == Token.OUT:
             self.token = self.scanner.nextToken()
 
