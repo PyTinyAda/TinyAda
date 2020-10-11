@@ -61,6 +61,10 @@ class Token:
         self.integer = 0
         self.string = ""
 
+    def __init__(self):
+        self.integer = 0
+        self.string = ""
+
     def toString(self):
         s = "Code    = " + self.CODES[self.code]
         if self.code == self.INT:

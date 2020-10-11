@@ -5,15 +5,14 @@ from Scanner import Scanner
 from Parser import Parser
 from Token import Token
 
-class TerminalApp:
-    chario = CharIO()
-    scanner = Scanner()
-    parser = Parser()
+stream = None
 
+class TerminalApp:
     def __init__(self):
         print("Enter the input file name: ")
         filename = input()
         try:
+            global stream
             stream = open(filename, 'r')
         except:
             print("Error opening file")
@@ -21,6 +20,10 @@ class TerminalApp:
         self.testChario()
         self.testScanner()
         self.testParser()
+
+    chario = CharIO(stream)
+    scanner = Scanner()
+    parser = Parser()
 
     def testChario(self):
         ch = self.chario.getChar()
