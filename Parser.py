@@ -14,13 +14,13 @@ class Parser:
     scanner = Scanner()
     token = Token()
 
-    addingOperator = {}
-    multiplyingOperator = {}
-    relationalOperator = {}
-    basicDeclarationHandles = {}
-    statementHandles = {}
-    leftNames = {}
-    rightNames = {}
+    addingOperator = set()
+    multiplyingOperator = set()
+    relationalOperator = set()
+    basicDeclarationHandles = set()
+    statementHandles = set()
+    leftNames = set()
+    rightNames = set()
 
     # constructor for the parser
     def __init__(self, c, s, mode):
