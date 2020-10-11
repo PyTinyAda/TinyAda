@@ -94,7 +94,7 @@ class Scanner:
         while True:
             self.ch = self.ch.upper()
             i = i + 1
-            self.tokenBuffer.append(ch)
+            self.tokenBuffer.append(self.ch)
             if i <= self.MAX_KEY_SPELLING:
                 idBuffer.append(self.ch)
             if self.ch == '_':
