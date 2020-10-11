@@ -34,7 +34,7 @@ class CharIO:
         if self.terminalBased:
             print(s)
 
-    def makeSpaces(number):  # private
+    def makeSpaces(self, number):  # private
         s = ""
         for i in range(1, number):
             s += " "
