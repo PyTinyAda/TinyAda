@@ -23,12 +23,12 @@ class Parser:
     rightNames = set()
 
     # constructor for the parser
-    def __init__(self, c, s, mode):
+    def __init__(self, c, s,):
         self.chario = c
         self.scanner = s
-        self.mode = mode
+        #self.mode = mode
         self.initHandles()
-        self.initTables()
+        #self.initTables()
         self.token = self.scanner.nextToken()
 
     def reset(self):
@@ -65,14 +65,14 @@ class Parser:
     #         elif s is None or (s.role != SymbolEntry.NONE and not (s.role in expected)):
     #             self.chario.putError(errorMessage)
 
-    def setRole(self, s, role):
-        if self.mode == Parser.ROLE and s is not None:
-            s.setRole(role)
+    #def setRole(self, s, role):
+    #    if self.mode == Parser.ROLE and s is not None:
+    #        s.setRole(role)
 
-    def appendEntry(self, head, tail):
-        if self.mode == Parser.SCOPE or self.mode == Parser.ROLE:
-            if head is not None:
-                head.append(tail)
+    #def appendEntry(self, head, tail):
+    #    if self.mode == Parser.SCOPE or self.mode == Parser.ROLE:
+    #        if head is not None:
+    #            head.append(tail)
 
     def accept(self, expected, errorMessage):
         if self.token.code != expected:
@@ -131,17 +131,13 @@ class Parser:
         self.accept(Token.EOF, "extra symbols after logical end of program")
         self.exitScope()
 
-    # def subprogramBody(self):
-    #     self.subprogramSpecification()
-    #     self.accept(Token.IS, "'is' expected")
-    #     self.declarativePart()
-    #     self.accept(Token.BEGIN, "'begin' expected")
-    #     self.sequenceOfStatements()
-    #     self.exitScope()
-    #     if self.token.code == Token.ID:
-    #         entry = self.findID()
-    #         self.acceptRole(entry, SymbolEntry.PROC, "must be a procedure name")
-    #     self.accept(Token.SEMI, "';' expected")
+    def subprogramBody(self):
+        self.subprogramSpecification()
+        self.accept(Token.IS, "'is' expected")
+        self.declarativePart()
+        self.accept(Token.BEGIN, "'begin' expected")
+        self.sequenceOfStatements()
+        self.accept(Token.END, "'end' expected")
 
     # def subprogramSpecification(self):
 
