@@ -1,6 +1,10 @@
+# Semantic analysis implementation commented
+
 from CharIO import CharIO
 from Scanner import Scanner
 from Token import Token
+
+
 # from SymbolEntry import SymbolEntry
 # from SymbolTable import SymbolTable
 
@@ -23,17 +27,17 @@ class Parser:
     rightNames = set()
 
     # constructor for the parser
-    def __init__(self, c, s,):
+    def __init__(self, c, s, ):
         self.chario = c
         self.scanner = s
-        #self.mode = mode
+        # self.mode = mode
         self.initHandles()
-        #self.initTables()
+        # self.initTables()
         self.token = self.scanner.nextToken()
 
     def reset(self):
         self.scanner.reset()
-        #self.initTable()
+        # self.initTable()
         self.token = self.scanner.nextToken()
 
     def initHandles(self):
@@ -65,11 +69,11 @@ class Parser:
     #         elif s is None or (s.role != SymbolEntry.NONE and not (s.role in expected)):
     #             self.chario.putError(errorMessage)
 
-    #def setRole(self, s, role):
+    # def setRole(self, s, role):
     #    if self.mode == Parser.ROLE and s is not None:
     #        s.setRole(role)
 
-    #def appendEntry(self, head, tail):
+    # def appendEntry(self, head, tail):
     #    if self.mode == Parser.SCOPE or self.mode == Parser.ROLE:
     #        if head is not None:
     #            head.append(tail)
@@ -98,33 +102,33 @@ class Parser:
     #         entry = self.table.enterSymbol("FALSE")
     #         self.setRole(entry, SymbolEntry.CONST)
 
-    def enterScope(self):
-        if self.mode == Parser.ROLE or self.mode == Parser.SCOPE:
-            self.table.enterscope()
+    # def enterScope(self):
+    #    if self.mode == Parser.ROLE or self.mode == Parser.SCOPE:
+    #        self.table.enterscope()
 
-    def exitScope(self):
-        if self.mode == Parser.ROLE or self.mode == Parser.SCOPE:
-            self.table.exitScope(self.mode)
+    # def exitScope(self):
+    #    if self.mode == Parser.ROLE or self.mode == Parser.SCOPE:
+    #        self.table.exitScope(self.mode)
 
-    def enterId(self):
-        entry = None
-        if self.token.code == Token.ID:
-            if self.token.mode == Parser.SCOPE or self.mode == Parser.mode:
-                entry = self.table.enterSymbol(self.token.string)
-        else:
-            self.fatalError("identifier expected")
-        self.token = self.scanner.nextToken()
-        return entry
+    # def enterId(self):
+    #    entry = None
+    #    if self.token.code == Token.ID:
+    #        if self.token.mode == Parser.SCOPE or self.mode == Parser.mode:
+    #            entry = self.table.enterSymbol(self.token.string)
+    #    else:
+    #        self.fatalError("identifier expected")
+    #    self.token = self.scanner.nextToken()
+    #    return entry
 
-    def findId(self):
-        entry = None
-        if self.token.code == Token.ID:
-            if self.mode == Parser.SCOPE or self.mode == Parser.ROLE:
-                entry = self.table.findSymbol(self.token.string)
-        else:
-            self.fatalError("identifier expected")
-        self.token = self.scanner.nextToken()
-        return entry
+    # def findId(self):
+    #    entry = None
+    #    if self.token.code == Token.ID:
+    #        if self.mode == Parser.SCOPE or self.mode == Parser.ROLE:
+    #            entry = self.table.findSymbol(self.token.string)
+    #    else:
+    #        self.fatalError("identifier expected")
+    #    self.token = self.scanner.nextToken()
+    #    return entry
 
     def parse(self):
         self.subprogramBody()
@@ -138,8 +142,15 @@ class Parser:
         self.accept(Token.BEGIN, "'begin' expected")
         self.sequenceOfStatements()
         self.accept(Token.END, "'end' expected")
+        if self.token.code == Token.ID:
+            self.token = self.scanner.nextToken()
+        self.accept(Token.SEMI, "semicolon expected")
 
-    # def subprogramSpecification(self):
+    def subprogramSpecification(self):
+        self.accpet(Token.PROC, "'procedure' expected")
+        self.accept(Token.ID, "identifier expected")
+        if self.token.code == Token.L_PAR:
+            self.formalPart()
 
     def formalPart(self):
         self.accept(Token.L_PAR, "'(' expected")
@@ -149,13 +160,15 @@ class Parser:
             self.parameterSpecification()
         self.accept(Token.R_PAR, "')' expected")
 
-    # def parameterSpecification(self):
-    #     list = self.identifierList()
-    #     self.setRole(list, SymbolEntry.PARAM)
-    #     self.accept(Token.COLON, "':' expected")
-    #     self.mode()
-    #     entry = self.findID()
-    #     self.acceptRole(entry, SymbolEntry.TYPE, "must be a type name")
+    def parameterSpecification(self):
+        # list = self.identifierList()
+        self.identifierList()
+        # self.setRole(list, SymbolEntry.PARAM)
+        self.accept(Token.COLON, "':' expected")
+        self.mode()
+        self.name()
+        # entry = self.findID()
+        # self.acceptRole(entry, SymbolEntry.TYPE, "must be a type name")
 
     def mode(self):
         if self.token.code == Token.IN:
@@ -179,18 +192,19 @@ class Parser:
         else:
             self.fatalError("error in declaration part")
 
-    # def numberOrObjectDeclaration(self):
-    #     list = self.identifierList()
-    #     self.accept(Token.COLON, "':' expected")
-    #     if self.token.code == Token.CONST:
-    #         self.setRole(list, SymbolEntry.CONST)
-    #         self.token = self.scanner.nextToken()
-    #         self.accept(Token.GETS, "':=' expected")
-    #         self.expression()
-    #     else:
-    #         self.setRole(list, SymbolEntry.VAR)
-    #         self.typeDefinition()
-    #     self.accept(Token.SEMI, "';' expected")
+    def numberOrObjectDeclaration(self):
+        # list = self.identifierList()
+        self.identifierList()
+        self.accept(Token.COLON, "':' expected")
+        if self.token.code == Token.CONST:
+            #self.setRole(list, SymbolEntry.CONST)
+            self.token = self.scanner.nextToken()
+            self.accept(Token.GETS, "':=' expected")
+            self.expression()
+        else:
+            #self.setRole(list, SymbolEntry.VAR)
+            self.typeDefinition()
+        self.accept(Token.SEMI, "';' expected")
 
     # # def typeDeclaration
 
@@ -198,7 +212,7 @@ class Parser:
 
     # def enumerationTypeDefinition(self):
     #     self.accept(Token.L_PAR,"'(' expected")
-    
+
     # def range(self):
     #     self.accept(Token.RANGE, "'range' expected")
     #     self.simpleExpression()
