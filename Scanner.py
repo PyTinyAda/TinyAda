@@ -23,7 +23,7 @@ class Scanner:
 
     def reset(self):
         self.chario.reset()
-        ch = self.chario.getChar()
+        self.ch = self.chario.getChar()
 
     def initKeywords(self):
         self.keywords['AND'] = Token(Token.AND)
