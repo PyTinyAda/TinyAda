@@ -9,7 +9,7 @@ class CharIO:
     column = 0
     lineNumber = 0
     MaxlineNumber = 0
-    # sourceProgram=""
+    sourceProgram = ""
     line = ""
 
     # newvariables
@@ -18,7 +18,6 @@ class CharIO:
 
     # Constructor
 
-        
     def __init__(self, stream=None):
         # modification needed.
         self.filename = stream  # how is 'stream' type used in main function exatly? I assumed 'stream' is a file name
@@ -33,8 +32,7 @@ class CharIO:
         self.line = ""
 
     def print(self, s):
-        if self.terminalBased:
-            print(s)
+        print(s)
 
     def makeSpaces(self, number):  # private
         s = ""
@@ -59,6 +57,45 @@ class CharIO:
 
     def getChar(self):
         if self.column >= len(self.line):
+            self.nextline()
+        ch = self.line[self.column]
+        self.column = self.column + 1
+        return ch
+
+    def nextline(self):
+        column = 0
+        line = self.getLine()
+        if self.line[0] != self.EF:
+            self.lineNumber += 1
+            print(self.lineNumber + " > " + line)
+
+    def readFile(self, stream):
+        reader = open(stream, 'r')
+        try:
+            data = reader.readline()
+            while data is not None:
+                self.sourceProgram += data + "\n"
+                data = reader.readline()
+        except IOError as e:
+            print("Error in file input" + str(e))
+
+    def getLine(self):
+        ln = ""
+        if self.sourceProgram == "":
+            ln = "" + self.EF
+        else:
+            first = self.sourceProgram.index(self.EL)
+            last = len(self.sourceProgram)
+            if first == -1:
+                ln = self.sourceProgram + self.EL
+                self.sourceProgram = ""
+            else:
+                ln = self.sourceProgram[first + 1:last]
+        return ln
+
+    '''
+    def getChar(self):
+        if self.column >= len(self.line):
             if self.lineNumber >= self.MaxlineNumber:
                 print("All characters in this file are done!\n")
             else:
@@ -72,6 +109,7 @@ class CharIO:
         reader = open(stream, 'r')
         self.data = reader.readlines()
         self.MaxlineNumber = len(self.data)
+    '''
 
     '''def private nextLine(): #private
        column = 0
