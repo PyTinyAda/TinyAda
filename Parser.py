@@ -14,8 +14,6 @@ class Parser:
     SCOPE = 1
     ROLE = 2
 
-    chario = CharIO()
-    scanner = Scanner()
     token = Token()
 
     addingOperator = set()
@@ -27,7 +25,7 @@ class Parser:
     rightNames = set()
 
     # constructor for the parser
-    def __init__(self, c, s, ):
+    def __init__(self, c, s):
         self.chario = c
         self.scanner = s
         # self.mode = mode

@@ -17,13 +17,13 @@ class TerminalApp:
         except:
             print("Error opening file")
             return
+        self.chario = CharIO(stream)
+        self.scanner = Scanner(chario)
+        self.parser = Parser(chario,scanner)    
         self.testChario()
         self.testScanner()
         self.testParser()
 
-    chario = CharIO(stream)
-    scanner = Scanner(chario)
-    parser = Parser(chario,scanner)
 
     def testChario(self):
         ch = self.chario.getChar()
