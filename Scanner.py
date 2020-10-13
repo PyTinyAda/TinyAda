@@ -3,7 +3,6 @@ from CharIO import CharIO
 
 class Scanner:
     token = Token()
-    chario = CharIO()
     ch = ''
     keywords = {}
     singleOps = {}
