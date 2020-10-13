@@ -18,7 +18,7 @@ class TerminalApp:
             return
         self.chario = CharIO(stream)
         self.scanner = Scanner(self.chario)
-        self.parser = Parser(chario,scanner)    
+        self.parser = Parser(self.chario,self.scanner)    
         self.testChario()
         self.testScanner()
         self.testParser()
