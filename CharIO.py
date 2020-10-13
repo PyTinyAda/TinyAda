@@ -65,10 +65,20 @@ class CharIO:
     def nextline(self):
         column = 0
         line = self.getLine()
-        if self.line[0] != self.EF:
+        if line[0] != self.EF:
             self.lineNumber += 1
-            print(self.lineNumber + " > " + line)
+            print(str(self.lineNumber) + " > " + line)
 
+    def readFile(self, stream):
+        reader = open(stream, 'r')
+        try:
+            with open(stream, 'r') as file:
+                for text in file:
+                    self.sourceProgram += text
+
+        except IOError as e:
+            print("Error in file input" + str(e))
+    '''
     def readFile(self, stream):
         reader = open(stream, 'r')
         try:
@@ -78,7 +88,7 @@ class CharIO:
                 data = reader.readline()
         except IOError as e:
             print("Error in file input" + str(e))
-
+    '''
     def getLine(self):
         ln = ""
         if self.sourceProgram == "":
