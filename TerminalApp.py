@@ -10,15 +10,14 @@ stream = None
 class TerminalApp:
     def __init__(self):
         print("Enter the input file name: ")
-        filename = input()
         try:
             global stream
-            stream = open(filename, 'r')
+            stream = './tiny.txt'
         except:
             print("Error opening file")
             return
         self.chario = CharIO(stream)
-        self.scanner = Scanner(chario)
+        self.scanner = Scanner(self.chario)
         self.parser = Parser(chario,scanner)    
         self.testChario()
         self.testScanner()
