@@ -94,7 +94,7 @@ class CharIO:
         if self.sourceProgram == "":
             ln = "" + self.EF
         else:
-            first = self.sourceProgram.index(self.EL)
+            first = self.sourceProgram.find(self.EL)
             last = len(self.sourceProgram)
             if first == -1:
                 ln = self.sourceProgram + self.EL
