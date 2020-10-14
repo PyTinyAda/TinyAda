@@ -248,7 +248,7 @@ class Parser:
             self.numberOrObjectDeclaration()
         elif self.token.code == Token.TYPE:
             pass
-            # self.typeDeclaration()
+            self.typeDeclaration()
         elif self.token.code == Token.PROC:
             self.subprogramBody()
         else:
@@ -265,30 +265,62 @@ class Parser:
             self.typeDefinition()
         self.accept(Token.SEMI, "';' expected")
 
+    def identifierList(self):
+        self.accept(Token.ID, "identifier expected")
+        while self.token.code == Token.COMMA:
+            self.token = self.scanner.nextToken()
+            self.accept(Token.ID, "identifier expected")
+
     def typeDeclaration(self):
         self.accept(Token.TYPE, "'type' expected")
         self.accept(Token.ID, "identifier expected")
         self.accept(Token.IS, "'is' expected")
         self.typeDefinition()
         self.accept(Token.SEMI, "semicolon expected")
-   
-    
+
+    def typeDefinition(self):
+        if self.token.code == Token.L_PAR:
+            self.enumerationTypeDefinition()
+        elif self.token.code == Token.ARRAY:
+            self.arrayTypeDefinition()
+        elif self.token.code == Token.RANGE:
+            self.range()
+        elif self.token.code == Token.ID:
+            self.name()
+        else:
+            self.fatalError("error in type definition")
+
+    def enumerationTypeDefinition(self):
+        self.accept(Token.L_PAR, "left parenthesis expected")
+        self.identifierList()
+        self.accept(Token.R_PAR, "right parenthesis expected")
+
+    def arrayTypeDefinition(self):
+        self.accept(Token.ARRAY, "'array' expected")
+        self.accept(Token.L_PAR, "left parenthesis expected")
+        self.index()
+        while self.token.code == Token.COMMA:
+            self.token = self.scanner.nextToken()
+            self.index()
+        self.accept(Token.R_PAR, "right parenthesis expected")
+        self.accept(Token.OF, "'of' expected")
+        self.name()
+
     def ifStatement(self):
         self.accept(Token.IF, "'if' expected")
         self.condition()
         self.accept(Token.THEN, "'then' expected")
         self.sequenceOfStatements()
-        while(self.token.code == Token.ELSIF):
+        while self.token.code == Token.ELSIF:
             self.token = self.scanner.nextToken()
             self.condition()
             self.accept(Token.THEN, "'then' expected")
             self.sequenceOfStatements()
-      
 
-        if(self.token.code == Token.ELSE):
+        if self.token.code == Token.ELSE:
             self.token = self.scanner.nextToken()
             self.sequenceOfStatements()
-      
+
         self.accept(Token.END, "'end' expected")
         self.accept(Token.IF, "'if' expected")
         self.accept(Token.SEMI, "semicolon expected")
@@ -300,32 +332,32 @@ class Parser:
             self.condition()
 
         self.accept(Token.SEMI, "semicolon expected")
-    
+
     def assignmentOrCallStatement(self):
         self.name()
         if self.token.code == Token.GETS:
             self.token = self.scanner.nextToken()
             self.expression()
-        elif(self.token.code == Token.L_PAR):
+        elif self.token.code == Token.L_PAR:
             self.actualParameterPart()
         self.accept(Token.SEMI, "semicolon expected")
-    
+
     def actualParameterPart(self):
         self.accept(Token.L_PAR, "left parenthesis expected")
         self.expression()
         while self.token.code == Token.COMMA:
             self.token = self.scanner.nextToken()
             self.expression()
-      
+
         self.accept(Token.R_PAR, "right parenthesis expected")
-    
+
     def condition(self):
         self.expression()
-    
+
     def iterationScheme(self):
         self.accept(Token.WHILE, "'while' expected")
         self.condition()
-    
+
     def loopStatement(self):
         if self.token.code == Token.WHILE:
             self.iterationScheme()
@@ -334,10 +366,40 @@ class Parser:
         self.accept(Token.END, "'end' expected")
         self.accept(Token.LOOP, "'loop' expected")
         self.accept(Token.SEMI, "semicolon expected")
-   
+
     def nullStatement(self):
         self.accept(Token.NULL, "'null' expected")
         self.accept(Token.SEMI, "semicolon expected")
-   
-   
-    
+
+    def index(self):
+        if self.token.code == Token.RANGE:
+            self.range()
+        elif self.token.code == self.token.ID:
+            self.name()
+        else:
+            self.fatalError("error in index")
+
+    def range(self):
+        self.accept(Token.RANGE, "'range' expected")
+        self.simpleExpression()
+        self.accept(Token.THRU, "dot dot expected")
+        self.simpleExpression()
+
+    def sequenceOfStatements(self):
+        self.statement()
+        while self.token.code in self.statementHandles:
+            self.statement()
+
+    def statement(self):
+        if self.token.code == Token.ID:
+            self.assignmentOrCallStatement()
+        elif self.token.code == Token.EXIT:
+            self.exitStatement()
+        elif self.token.code == Token.IF:
+            self.ifStatement()
+        elif self.token.code == Token.NULL:
+            self.nullStatement()
+        elif (self.token.code == Token.WHILE) or (self.token.code == Token.LOOP):
+            self.loopStatement()
+        else:
+            self.fatalError("error in statement")
