@@ -257,7 +257,6 @@ class Parser:
 
     def numberOrObjectDeclaration(self):
         self.identifierList()
-        print(self.token.code)
         self.accept(Token.COLON, "':' expected")
         if self.token.code == Token.CONST:
             self.token = self.scanner.nextToken()
