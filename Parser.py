@@ -82,7 +82,7 @@ class Parser:
         self.token = self.scanner.nextToken()
 
     def fatalError(self, errorMessage):
-        self.chario.putError()
+        self.chario.putError(errorMessage)
         raise RuntimeError("Fatal Error")
 
     # def initTable(self):
@@ -131,7 +131,7 @@ class Parser:
     def parse(self):
         self.subprogramBody()
         self.accept(Token.EOF, "extra symbols after logical end of program")
-        self.exitScope()
+        #self.exitScope()
 
     def subprogramBody(self):
         self.subprogramSpecification()
@@ -216,3 +216,31 @@ class Parser:
     #     self.simpleExpression()
     #     self.accept(Token.THRU, "'..' expected")
     #     self.simpleExpression()
+
+    def ifStatement(self):
+        self.accept(Token.IF, "'if' expected")
+        self.condition()
+        self.accept(Token.THEN, "'then' expected")
+        self.sequenceOfStatements()
+        while(self.token.code == Token.ELSIF):
+            self.token = self.scanner.nextToken()
+            self.condition()
+            self.accept(Token.THEN, "'then' expected")
+            self.sequenceOfStatements()
+      
+
+        if(self.token.code == Token.ELSE):
+            self.token = self.scanner.nextToken()
+            self.sequenceOfStatements()
+      
+        self.accept(Token.END, "'end' expected")
+        self.accept(Token.IF, "'if' expected")
+        self.accept(Token.SEMI, "semicolon expected")
+
+    def exitStatement(self):
+        self.accept(Token.EXIT, "'exit' expected")
+        if(self.token.code == Token.WHEN):
+            self.token = self.scanner.nextToken()
+            self.condition()
+
+        self.accept(Token.SEMI, "semicolon expected")

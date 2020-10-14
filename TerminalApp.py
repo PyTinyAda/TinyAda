@@ -20,7 +20,7 @@ class TerminalApp:
         self.scanner = Scanner(self.chario)
         self.parser = Parser(self.chario,self.scanner)    
         #self.testChario()
-        self.testScanner()
+        #self.testScanner()
         self.testParser()
 
 
