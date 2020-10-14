@@ -174,7 +174,7 @@ class Scanner:
         self.tokenBuffer.append(self.ch)
         self.ch = self.chario.getChar()
         self.tokenBuffer.append(self.ch)
-        self.token = self.findTokenfindTokken(self.doubleOps, ''.join(self.tokenBuffer))
+        self.token = self.findToken(self.doubleOps, ''.join(self.tokenBuffer))
         if self.token.code != Token.ERROR:
             self.ch = self.chario.getChar()
 
