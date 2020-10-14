@@ -131,14 +131,14 @@ class Parser:
     def parse(self):
         self.subprogramBody()
         self.accept(Token.EOF, "extra symbols after logical end of program")
-        #self.exitScope()
+        # self.exitScope()
 
     def subprogramBody(self):
         self.subprogramSpecification()
         self.accept(Token.IS, "'is' expected")
         self.declarativePart()
         self.accept(Token.BEGIN, "'begin' expected")
-        #self.sequenceOfStatements()
+        # self.sequenceOfStatements()
         self.accept(Token.END, "'end' expected")
         if self.token.code == Token.ID:
             self.token = self.scanner.nextToken()
@@ -160,7 +160,6 @@ class Parser:
 
     def parameterSpecification(self):
         # list = self.identifierList()
-        # self.identifierList()
         # self.setRole(list, SymbolEntry.PARAM)
         self.accept(Token.COLON, "':' expected")
         self.mode()
@@ -191,6 +190,40 @@ class Parser:
                 self.token = self.scanner.nextToken()
                 self.relation()
 
+    def simpleExpression(self):
+        if self.token.code in self.addingOperator:
+            self.token = self.scanner.nextToken()
+        self.term()
+        while self.token.code in self.addingOperator:
+            self.token = self.scanner.nextToken()
+            self.term()
+
+    def term(self):
+        self.factor()
+        while self.token.code in self.multiplyingOperator:
+            self.token = self.scanner.nextToken()
+            self.factor()
+
+    def factor(self):
+        self.primary()
+        if self.token.code == Token.EXPO:
+            self.token = self.scanner.nextToken()
+            self.primary()
+        elif self.token.code == Token.NOT:
+            self.token = self.scanner.nextToken()
+            self.primary()
+
+    def primary(self):
+        if (self.token.code == Token.INT) or (self.token.code == Token.CHAR):
+            self.token = self.scanner.nextToken()
+        elif self.token.code == Token.ID:
+            self.name()
+        elif self.token.code == Token.L_PAR:
+            self.token = self.scanner.nextToken()
+            self.expression()
+            self.accept(Token.R_PAR, "')' expected")
+        else:
+            self.fatalError("error in primary")
 
     def relation(self):
         self.simpleExpression()
@@ -215,7 +248,7 @@ class Parser:
             self.numberOrObjectDeclaration()
         elif self.token.code == Token.TYPE:
             pass
-            #self.typeDeclaration()
+            # self.typeDeclaration()
         elif self.token.code == Token.PROC:
             self.subprogramBody()
         else:
@@ -223,16 +256,17 @@ class Parser:
 
     def numberOrObjectDeclaration(self):
         # list = self.identifierList()
-        self.identifierList()
+        # self.identifierList()
         self.accept(Token.COLON, "':' expected")
         if self.token.code == Token.CONST:
-            #self.setRole(list, SymbolEntry.CONST)
+            # self.setRole(list, SymbolEntry.CONST)
             self.token = self.scanner.nextToken()
             self.accept(Token.GETS, "':=' expected")
             self.expression()
         else:
-            #self.setRole(list, SymbolEntry.VAR)
-            self.typeDefinition()
+            # self.setRole(list, SymbolEntry.VAR)
+            # self.typeDefinition()
+            pass
         self.accept(Token.SEMI, "';' expected")
 
     # # def typeDeclaration
