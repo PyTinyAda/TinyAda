@@ -36,7 +36,7 @@ class CharIO:
 
     def makeSpaces(self, number):  # private
         s = ""
-        for i in range(1, number):
+        for i in range(1, number+1):
             s += " "
         return s
 
@@ -59,7 +59,7 @@ class CharIO:
         if self.column >= len(self.line):
             self.nextline()
         ch = self.line[self.column]
-        self.column = self.column + 1
+        self.column += 1
         return ch
 
     def nextline(self):
@@ -100,7 +100,8 @@ class CharIO:
                 ln = self.sourceProgram + self.EL
                 self.sourceProgram = ""
             else:
-                ln = self.sourceProgram[first + 1:last]
+                ln = self.sourceProgram[0:first + 1]
+                self.sourceProgram = self.sourceProgram[first + 1:last]
         return ln
 
     '''
