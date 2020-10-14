@@ -183,7 +183,7 @@ class Parser:
 
     def expression(self):
         self.relation()
-        if self.token == Token.AND:
+        if self.token.code == Token.AND:
             while self.token.code == Token.AND:
                 self.token = self.scanner.nextToken()
                 self.relation()
@@ -257,6 +257,7 @@ class Parser:
 
     def numberOrObjectDeclaration(self):
         self.identifierList()
+        print(self.token.code)
         self.accept(Token.COLON, "':' expected")
         if self.token.code == Token.CONST:
             self.token = self.scanner.nextToken()
