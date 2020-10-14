@@ -82,7 +82,7 @@ class Parser:
         self.token = self.scanner.nextToken()
 
     def fatalError(self, errorMessage):
-        self.chario.putError()
+        self.chario.putError(errorMessage)
         raise RuntimeError("Fatal Error")
 
     # def initTable(self):
@@ -269,15 +269,52 @@ class Parser:
             pass
         self.accept(Token.SEMI, "';' expected")
 
-    # # def typeDeclaration
+    def ifStatement(self):
+        self.accept(Token.IF, "'if' expected")
+        self.condition()
+        self.accept(Token.THEN, "'then' expected")
+        self.sequenceOfStatements()
+        while(self.token.code == Token.ELSIF):
+            self.token = self.scanner.nextToken()
+            self.condition()
+            self.accept(Token.THEN, "'then' expected")
+            self.sequenceOfStatements()
+      
 
-    # # def typeDefinition
+        if(self.token.code == Token.ELSE):
+            self.token = self.scanner.nextToken()
+            self.sequenceOfStatements()
+      
+        self.accept(Token.END, "'end' expected")
+        self.accept(Token.IF, "'if' expected")
+        self.accept(Token.SEMI, "semicolon expected")
 
-    # def enumerationTypeDefinition(self):
-    #     self.accept(Token.L_PAR,"'(' expected")
+    def exitStatement(self):
+        self.accept(Token.EXIT, "'exit' expected")
+        if self.token.code == Token.WHEN:
+            self.token = self.scanner.nextToken()
+            self.condition()
 
-    # def range(self):
-    #     self.accept(Token.RANGE, "'range' expected")
-    #     self.simpleExpression()
-    #     self.accept(Token.THRU, "'..' expected")
-    #     self.simpleExpression()
+        self.accept(Token.SEMI, "semicolon expected")
+    
+    def assignmentOrCallStatement(self):
+        self.name()
+        if self.token.code == Token.GETS:
+            self.token = self.scanner.nextToken()
+            self.expression()
+        elif(self.token.code == Token.L_PAR):
+            self.actualParameterPart()
+        self.accept(Token.SEMI, "semicolon expected")
+    
+    def actualParameterPart(self):
+        self.accept(Token.L_PAR, "left parenthesis expected")
+        self.expression()
+        while self.token.code == Token.COMMA:
+            self.token = self.scanner.nextToken()
+            self.expression()
+      
+        self.accept(Token.R_PAR, "right parenthesis expected")
+    
+    def condition(self):
+        self.expression()
+    
