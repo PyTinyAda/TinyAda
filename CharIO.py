@@ -74,7 +74,7 @@ class CharIO:
         try:
             with open(stream, 'r') as file:
                 for text in file:
-                    self.sourceProgram += text
+                    self.sourceProgram += text.lower()
 
         except IOError as e:
             print("Error in file input" + str(e))
