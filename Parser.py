@@ -159,13 +159,12 @@ class Parser:
         self.accept(Token.R_PAR, "')' expected")
 
     def parameterSpecification(self):
-        # list = self.identifierList()
+        self.identifierList()
         # self.setRole(list, SymbolEntry.PARAM)
         self.accept(Token.COLON, "':' expected")
         self.mode()
         self.name()
-        # entry = self.findID()
-        # self.acceptRole(entry, SymbolEntry.TYPE, "must be a type name")
+        
 
     def name(self):
         self.accept(Token.ID, "identifier expected")
