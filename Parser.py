@@ -138,7 +138,7 @@ class Parser:
         self.accept(Token.IS, "'is' expected")
         self.declarativePart()
         self.accept(Token.BEGIN, "'begin' expected")
-        # self.sequenceOfStatements()
+        self.sequenceOfStatements()
         self.accept(Token.END, "'end' expected")
         if self.token.code == Token.ID:
             self.token = self.scanner.nextToken()
@@ -255,20 +255,24 @@ class Parser:
             self.fatalError("error in declaration part")
 
     def numberOrObjectDeclaration(self):
-        # list = self.identifierList()
-        # self.identifierList()
+        self.identifierList()
         self.accept(Token.COLON, "':' expected")
         if self.token.code == Token.CONST:
-            # self.setRole(list, SymbolEntry.CONST)
             self.token = self.scanner.nextToken()
             self.accept(Token.GETS, "':=' expected")
             self.expression()
         else:
-            # self.setRole(list, SymbolEntry.VAR)
-            # self.typeDefinition()
-            pass
+            self.typeDefinition()
         self.accept(Token.SEMI, "';' expected")
 
+    def typeDeclaration(self):
+        self.accept(Token.TYPE, "'type' expected")
+        self.accept(Token.ID, "identifier expected")
+        self.accept(Token.IS, "'is' expected")
+        self.typeDefinition()
+        self.accept(Token.SEMI, "semicolon expected")
+   
+    
     def ifStatement(self):
         self.accept(Token.IF, "'if' expected")
         self.condition()
@@ -317,4 +321,23 @@ class Parser:
     
     def condition(self):
         self.expression()
+    
+    def iterationScheme(self):
+        self.accept(Token.WHILE, "'while' expected")
+        self.condition()
+    
+    def loopStatement(self):
+        if self.token.code == Token.WHILE:
+            self.iterationScheme()
+        self.accept(Token.LOOP, "'loop' expected")
+        self.sequenceOfStatements()
+        self.accept(Token.END, "'end' expected")
+        self.accept(Token.LOOP, "'loop' expected")
+        self.accept(Token.SEMI, "semicolon expected")
+   
+    def nullStatement(self):
+        self.accept(Token.NULL, "'null' expected")
+        self.accept(Token.SEMI, "semicolon expected")
+   
+   
     
