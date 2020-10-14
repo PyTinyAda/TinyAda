@@ -49,7 +49,8 @@ class Scanner:
         
     def initSingleOps(self):
         self.singleOps[':'] = Token(Token.COLON)
-        self.singleOps['='] = Token(Token.COMMA)
+        self.singleOps[','] = Token(Token.COMMA)
+        self.singleOps['='] = Token(Token.EQ)
         self.singleOps['>'] = Token(Token.GT)
         self.singleOps['<'] = Token(Token.LT)
         self.singleOps['('] = Token(Token.L_PAR)
