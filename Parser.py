@@ -246,7 +246,6 @@ class Parser:
         if self.token.code == Token.ID:
             self.numberOrObjectDeclaration()
         elif self.token.code == Token.TYPE:
-            pass
             self.typeDeclaration()
         elif self.token.code == Token.PROC:
             self.subprogramBody()
