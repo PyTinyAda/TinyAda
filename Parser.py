@@ -172,7 +172,7 @@ class Parser:
             self.indexedComponent()
 
     def indexedComponent(self):
-        self.accept(Token.L_PAR, "Left paranthesis expected")
+        self.accept(Token.L_PAR, "Left parenthesis expected")
         self.expression()
         while self.token.code == Token.COMMA:
             self.token = self.scanner.nextToken()
