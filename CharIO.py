@@ -63,11 +63,11 @@ class CharIO:
         return ch
 
     def nextline(self):
-        column = 0
-        line = self.getLine()
-        if line[0] != self.EF:
+        self.column = 0
+        self.line = self.getLine()
+        if self.line[0] != self.EF:
             self.lineNumber += 1
-            print(str(self.lineNumber) + " > " + line)
+            print(str(self.lineNumber) + " > " + self.line)
 
     def readFile(self, stream):
         reader = open(stream, 'r')
