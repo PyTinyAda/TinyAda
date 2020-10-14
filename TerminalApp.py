@@ -19,7 +19,7 @@ class TerminalApp:
         self.chario = CharIO(stream)
         self.scanner = Scanner(self.chario)
         self.parser = Parser(self.chario,self.scanner)    
-        self.testChario()
+        #self.testChario()
         self.testScanner()
         self.testParser()
 
@@ -33,7 +33,7 @@ class TerminalApp:
     def testScanner(self):
         token = self.scanner.nextToken()
         while token.code != Token.EOF:
-            self.chario.print(self.token.toString())
+            self.chario.print(token.toString())
             token = self.scanner.nextToken()
         self.chario.reportErrors()
 

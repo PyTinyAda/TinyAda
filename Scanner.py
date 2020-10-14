@@ -69,11 +69,10 @@ class Scanner:
         self.doubleOps['..'] = Token(Token.THRU)
 
     def findToken(self, table, target):
-        t = table[target]
-        if t is None :
+        if target not in table:
             return Token(Token.ERROR)
         else :
-            return t
+            return table[target]
         
     def skipBlanks(self):
         while (self.ch == ' ' or self.ch == CharIO.EL or self.ch == CharIO.TAB) :
@@ -89,14 +88,14 @@ class Scanner:
             self.chario.putError("illegal leading '_")
         while True:
             self.ch = self.ch.upper()
-            i = i + 1
+            i += 1
             self.tokenBuffer.append(self.ch)
             if i <= self.MAX_KEY_SPELLING:
                 idBuffer.append(self.ch)
             if self.ch == '_':
                 self.ch = self.chario.getChar()
                 if self.ch == '_':
-                    barCount = barCount + 1
+                    barCount += 1
                 if not (self.ch.isdigit() or self.ch.isalpha()) and self.ch != '_':
                     self.chario.putError("letter or digit expected after '_'")
             else:
