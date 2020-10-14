@@ -64,7 +64,7 @@ class CharIO:
 
     def nextline(self):
         self.column = 0
-        self.line = self.getLine()
+        self.line = self.getLine().lower()
         if self.line[0] != self.EF:
             self.lineNumber += 1
             print(str(self.lineNumber) + " > " + self.line)
