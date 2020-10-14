@@ -235,19 +235,6 @@ class Parser:
             self.typeDefinition()
         self.accept(Token.SEMI, "';' expected")
 
-    # # def typeDeclaration
-
-    # # def typeDefinition
-
-    # def enumerationTypeDefinition(self):
-    #     self.accept(Token.L_PAR,"'(' expected")
-
-    # def range(self):
-    #     self.accept(Token.RANGE, "'range' expected")
-    #     self.simpleExpression()
-    #     self.accept(Token.THRU, "'..' expected")
-    #     self.simpleExpression()
-
     def ifStatement(self):
         self.accept(Token.IF, "'if' expected")
         self.condition()
@@ -270,8 +257,30 @@ class Parser:
 
     def exitStatement(self):
         self.accept(Token.EXIT, "'exit' expected")
-        if(self.token.code == Token.WHEN):
+        if self.token.code == Token.WHEN:
             self.token = self.scanner.nextToken()
             self.condition()
 
         self.accept(Token.SEMI, "semicolon expected")
+    
+    def assignmentOrCallStatement(self):
+        self.name()
+        if self.token.code == Token.GETS:
+            self.token = self.scanner.nextToken()
+            self.expression()
+        elif(self.token.code == Token.L_PAR):
+            self.actualParameterPart()
+        self.accept(Token.SEMI, "semicolon expected")
+    
+    def actualParameterPart(self):
+        self.accept(Token.L_PAR, "left parenthesis expected")
+        self.expression()
+        while self.token.code == Token.COMMA:
+            self.token = self.scanner.nextToken()
+            self.expression()
+      
+        self.accept(Token.R_PAR, "right parenthesis expected")
+    
+    def condition(self):
+        self.expression()
+    
