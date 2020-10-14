@@ -53,7 +53,7 @@ class CharIO:
         elif self.totalErrors == 1:
             print("1 error reported.")
         else:
-            print(self.totalErrors + " errors reported.")
+            print(str(self.totalErrors) + " errors reported.")
 
     def getChar(self):
         if self.column >= len(self.line):

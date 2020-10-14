@@ -66,7 +66,7 @@ class Token:
         if self.code == self.INT:
             s += "\nInteger = " + str(self.integer)
         elif self.code == self.ID:
-            s += "\nString = " + self.string;
+            s += "\nString = " + self.string
         return s
 
     CODES = ["AND", "ARRAY", "BEGIN", "CHAR", "COLON", "COMMA", "CONST", "DIV", "ELSE", "ELSIF",
