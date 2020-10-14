@@ -138,14 +138,14 @@ class Parser:
         self.accept(Token.IS, "'is' expected")
         self.declarativePart()
         self.accept(Token.BEGIN, "'begin' expected")
-        self.sequenceOfStatements()
+        #self.sequenceOfStatements()
         self.accept(Token.END, "'end' expected")
         if self.token.code == Token.ID:
             self.token = self.scanner.nextToken()
         self.accept(Token.SEMI, "semicolon expected")
 
     def subprogramSpecification(self):
-        self.accpet(Token.PROC, "'procedure' expected")
+        self.accept(Token.PROC, "'procedure' expected")
         self.accept(Token.ID, "identifier expected")
         if self.token.code == Token.L_PAR:
             self.formalPart()
@@ -160,13 +160,43 @@ class Parser:
 
     def parameterSpecification(self):
         # list = self.identifierList()
-        self.identifierList()
+        # self.identifierList()
         # self.setRole(list, SymbolEntry.PARAM)
         self.accept(Token.COLON, "':' expected")
         self.mode()
         self.name()
         # entry = self.findID()
         # self.acceptRole(entry, SymbolEntry.TYPE, "must be a type name")
+
+    def name(self):
+        self.accept(Token.ID, "identifier expected")
+        if self.token.code == Token.L_PAR:
+            self.indexedComponent()
+
+    def indexedComponent(self):
+        self.accept(Token.L_PAR, "Left paranthesis expected")
+        self.expression()
+        while self.token.code == Token.COMMA:
+            self.token = self.scanner.nextToken()
+            self.expression()
+
+    def expression(self):
+        self.relation()
+        if self.token == Token.AND:
+            while self.token.code == Token.AND:
+                self.token = self.scanner.nextToken()
+                self.relation()
+        elif self.token.code == Token.OR:
+            while self.token.code == Token.OR:
+                self.token = self.scanner.nextToken()
+                self.relation()
+
+
+    def relation(self):
+        self.simpleExpression()
+        if self.token.code in self.relationalOperator:
+            self.token = self.scanner.nextToken()
+            self.simpleExpression()
 
     def mode(self):
         if self.token.code == Token.IN:
@@ -184,7 +214,8 @@ class Parser:
         if self.token.code == Token.ID:
             self.numberOrObjectDeclaration()
         elif self.token.code == Token.TYPE:
-            self.typeDeclaration()
+            pass
+            #self.typeDeclaration()
         elif self.token.code == Token.PROC:
             self.subprogramBody()
         else:
