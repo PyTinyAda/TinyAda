@@ -64,7 +64,7 @@ class Token:
     def toString(self):
         s = "Code    = " + self.CODES[self.code]
         if self.code == self.INT:
-            s += "\nInteger = " + self.integer
+            s += "\nInteger = " + str(self.integer)
         elif self.code == self.ID:
             s += "\nString = " + self.string;
         return s
