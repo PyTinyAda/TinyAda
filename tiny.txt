@@ -25,7 +25,7 @@ procedure TEST is
                 end loop;
             end INIT_MATRIX;
         
-        beginI : INTEGER;
-        beginI := 1;
+        beginI : integer;
+        beginI := 3;
         INIT_MATRIX(I, A);
         end TEST;

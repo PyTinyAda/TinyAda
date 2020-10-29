@@ -27,7 +27,7 @@ class Parser:
         self.scanner = s
         self.mode = mode
         self.initHandles()
-        self.initTables()
+        self.initTable()
         self.token = self.scanner.nextToken()
 
     def reset(self):
@@ -58,7 +58,7 @@ class Parser:
         self.statementHandles.add(Token.WHILE)
 
     def acceptRole(self, s, expected, errorMessage):
-        if self.mode == Parser.Role:
+        if self.mode == Parser.ROLE:
             if s is None or (s.role != SymbolEntry.NONE and s.role != expected):
                 self.chario.putError(errorMessage)
             elif s is None or (s.role != SymbolEntry.NONE and not (s.role in expected)):
@@ -139,7 +139,7 @@ class Parser:
         self.accept(Token.END, "'end' expected")
         if self.token.code == Token.ID:
             entry = self.findId()
-            self.acceptRole(self, entry, SymbolEntry.PROC, "must be a procedure name")
+            self.acceptRole(entry, SymbolEntry.PROC, "must be a procedure name")
         self.accept(Token.SEMI, "semicolon expected")
 
     def subprogramSpecification(self):
@@ -162,7 +162,7 @@ class Parser:
         self.accept(Token.COLON, "':' expected")
         self.mode()
         entry = self.findId()
-        self.acceptRole(self, entry, SymbolEntry.TYPE, "must be a type name")
+        self.acceptRole(entry, SymbolEntry.TYPE, "must be a type name")
 
     def mode(self):
         if self.token.code == Token.IN:
@@ -190,19 +190,19 @@ class Parser:
         list = self.identifierList()
         self.accept(Token.COLON, "':' expected")
         if self.token.code == Token.CONST:
-            self.setRole(self, list, SymbolEntry.CONST)
+            self.setRole(list, SymbolEntry.CONST)
             self.token = self.scanner.nextToken()
             self.accept(Token.GETS, "':=' expected")
             self.expression()
         else:
-            self.setRole(self, list, SymbolEntry.VAR)
+            self.setRole(list, SymbolEntry.VAR)
             self.typeDefinition()
         self.accept(Token.SEMI, "semicolon expected")
 
     def typeDeclaration(self):
         self.accept(Token.TYPE, "'type' expected")
         entry = self.enterId()
-        self.setRole(self, entry, SymbolEntry.TYPE)
+        self.setRole(entry, SymbolEntry.TYPE)
         self.accept(Token.IS, "'is' expected")
         self.typeDefinition()
         self.accept(Token.SEMI, "semicolon expected")
@@ -223,7 +223,7 @@ class Parser:
     def enumerationTypeDefinition(self):
         self.accept(Token.L_PAR, "left parenthesis expected")
         list = self.identifierList()
-        self.setRole(self, list, SymbolEntry.CONST)
+        self.setRole(list, SymbolEntry.CONST)
         self.accept(Token.R_PAR, "right parenthesis expected")
 
     def arrayTypeDefinition(self):
@@ -236,14 +236,14 @@ class Parser:
         self.accept(Token.R_PAR, "right parenthesis expected")
         self.accept(Token.OF, "'of' expected")
         entry = self.findId()
-        self.acceptRole(self, entry, SymbolEntry.TYPE, "must be a type name")
+        self.acceptRole(entry, SymbolEntry.TYPE, "must be a type name")
 
     def index(self):
         if self.token.code == Token.RANGE:
             self.range()
         elif self.token.code == self.token.ID:
             entry = self.findId()
-            self.acceptRole(self, entry, SymbolEntry.TYPE, "must be a type name")
+            self.acceptRole(entry, SymbolEntry.TYPE, "must be a type name")
         else:
             self.fatalError("error in index")
 
@@ -257,7 +257,7 @@ class Parser:
         list = self.enterId()
         while self.token.code == Token.COMMA:
             self.token = self.scanner.nextToken()
-            self.appendEntry(self, list, self.enterId())
+            self.appendEntry(list, self.enterId())
         return list
 
     def sequenceOfStatements(self):
@@ -325,11 +325,11 @@ class Parser:
     def assignmentOrCallStatement(self):
         entry = self.name()
         if self.token.code == Token.GETS:
-            self.acceptRole(self, entry, self.leftNames, "must be a parameter of variable name")
+            self.acceptRole(entry, self.leftNames, "must be a parameter of variable name")
             self.token = self.scanner.nextToken()
             self.expression()
         else:
-            self.acceptRole(self, entry, SymbolEntry.PROC, "must be a procedure name")
+            self.acceptRole(entry, SymbolEntry.PROC, "must be a procedure name")
         self.accept(Token.SEMI, "semicolon expected")
 
     def condition(self):
@@ -382,7 +382,7 @@ class Parser:
             self.token = self.scanner.nextToken()
         elif self.token.code == Token.ID:
             entry = self.name()
-            self.acceptRole(self, entry, self.rightNames, "must be a parameter, variable or constant name")
+            self.acceptRole(entry, self.rightNames, "must be a parameter, variable or constant name")
         elif self.token.code == Token.L_PAR:
             self.token = self.scanner.nextToken()
             self.expression()
