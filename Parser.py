@@ -1,12 +1,9 @@
-# Semantic analysis implementation commented
-
 from CharIO import CharIO
 from Scanner import Scanner
 from Token import Token
 
-
-# from SymbolEntry import SymbolEntry
-# from SymbolTable import SymbolTable
+from SymbolEntry import SymbolEntry
+from SymbolTable import SymbolTable
 
 
 class Parser:
@@ -25,17 +22,17 @@ class Parser:
     rightNames = set()
 
     # constructor for the parser
-    def __init__(self, c, s):
+    def __init__(self, c, s, mode):
         self.chario = c
         self.scanner = s
-        # self.mode = mode
+        self.mode = mode
         self.initHandles()
-        # self.initTables()
+        self.initTables()
         self.token = self.scanner.nextToken()
 
     def reset(self):
         self.scanner.reset()
-        # self.initTable()
+        self.initTable()
         self.token = self.scanner.nextToken()
 
     def initHandles(self):
@@ -60,21 +57,21 @@ class Parser:
         self.statementHandles.add(Token.NULL)
         self.statementHandles.add(Token.WHILE)
 
-    # def acceptRole(self, s, expected, errorMessage):
-    #     if self.mode == Parser.Role:
-    #         if s is None or (s.role != SymbolEntry.NONE and s.role != expected):
-    #             self.chario.putError(errorMessage)
-    #         elif s is None or (s.role != SymbolEntry.NONE and not (s.role in expected)):
-    #             self.chario.putError(errorMessage)
+    def acceptRole(self, s, expected, errorMessage):
+        if self.mode == Parser.Role:
+            if s is None or (s.role != SymbolEntry.NONE and s.role != expected):
+                self.chario.putError(errorMessage)
+            elif s is None or (s.role != SymbolEntry.NONE and not (s.role in expected)):
+                self.chario.putError(errorMessage)
 
-    # def setRole(self, s, role):
-    #    if self.mode == Parser.ROLE and s is not None:
-    #        s.setRole(role)
+    def setRole(self, s, role):
+        if self.mode == Parser.ROLE and s is not None:
+            s.setRole(role)
 
-    # def appendEntry(self, head, tail):
-    #    if self.mode == Parser.SCOPE or self.mode == Parser.ROLE:
-    #        if head is not None:
-    #            head.append(tail)
+    def appendEntry(self, head, tail):
+        if self.mode == Parser.SCOPE or self.mode == Parser.ROLE:
+            if head is not None:
+                head.append(tail)
 
     def accept(self, expected, errorMessage):
         if self.token.code != expected:
@@ -85,53 +82,53 @@ class Parser:
         self.chario.putError(errorMessage)
         raise RuntimeError("Fatal Error")
 
-    # def initTable(self):
-    #     if self.mode == Parser.ROLE or self.mode == Parser.SCOPE:
-    #         self.table = SymbolTable(self.chario)
-    #         self.enterScope()
-    #         entry = self.table.enterSymbol("BOOLEAN")
-    #         self.setRole(entry, SymbolEntry.TYPE)
-    #         entry = self.table.enterSymbol("CHAR")
-    #         self.setRole(entry, SymbolEntry.TYPE)
-    #         entry = self.table.enterSymbol("INTEGER")
-    #         self.setRole(entry, SymbolEntry.TYPE)
-    #         entry = self.table.enterSymbol("TRUE")
-    #         self.setRole(entry, SymbolEntry.CONST)
-    #         entry = self.table.enterSymbol("FALSE")
-    #         self.setRole(entry, SymbolEntry.CONST)
+    def initTable(self):
+        if self.mode == Parser.ROLE or self.mode == Parser.SCOPE:
+            self.table = SymbolTable(self.chario)
+            self.enterScope()
+            entry = self.table.enterSymbol("BOOLEAN")
+            self.setRole(entry, SymbolEntry.TYPE)
+            entry = self.table.enterSymbol("CHAR")
+            self.setRole(entry, SymbolEntry.TYPE)
+            entry = self.table.enterSymbol("INTEGER")
+            self.setRole(entry, SymbolEntry.TYPE)
+            entry = self.table.enterSymbol("TRUE")
+            self.setRole(entry, SymbolEntry.CONST)
+            entry = self.table.enterSymbol("FALSE")
+            self.setRole(entry, SymbolEntry.CONST)
 
-    # def enterScope(self):
-    #    if self.mode == Parser.ROLE or self.mode == Parser.SCOPE:
-    #        self.table.enterscope()
+    def enterScope(self):
+        if self.mode == Parser.ROLE or self.mode == Parser.SCOPE:
+            self.table.enterScope()
 
-    # def exitScope(self):
-    #    if self.mode == Parser.ROLE or self.mode == Parser.SCOPE:
-    #        self.table.exitScope(self.mode)
+    def exitScope(self):
+        if self.mode == Parser.ROLE or self.mode == Parser.SCOPE:
+            self.table.exitScope(self.mode)
 
-    # def enterId(self):
-    #    entry = None
-    #    if self.token.code == Token.ID:
-    #        if self.token.mode == Parser.SCOPE or self.mode == Parser.mode:
-    #            entry = self.table.enterSymbol(self.token.string)
-    #    else:
-    #        self.fatalError("identifier expected")
-    #    self.token = self.scanner.nextToken()
-    #    return entry
+    def enterId(self):
+        entry = None
+        if self.token.code == Token.ID:
+            if self.token.mode == Parser.SCOPE or self.mode == Parser.mode:
+                entry = self.table.enterSymbol(self.token.string)
+        else:
+            self.fatalError("identifier expected")
+        self.token = self.scanner.nextToken()
+        return entry
 
-    # def findId(self):
-    #    entry = None
-    #    if self.token.code == Token.ID:
-    #        if self.mode == Parser.SCOPE or self.mode == Parser.ROLE:
-    #            entry = self.table.findSymbol(self.token.string)
-    #    else:
-    #        self.fatalError("identifier expected")
-    #    self.token = self.scanner.nextToken()
-    #    return entry
+    def findId(self):
+        entry = None
+        if self.token.code == Token.ID:
+            if self.mode == Parser.SCOPE or self.mode == Parser.ROLE:
+                entry = self.table.findSymbol(self.token.string)
+        else:
+            self.fatalError("identifier expected")
+        self.token = self.scanner.nextToken()
+        return entry
 
     def parse(self):
         self.subprogramBody()
         self.accept(Token.EOF, "extra symbols after logical end of program")
-        # self.exitScope()
+        self.exitScope()
 
     def subprogramBody(self):
         self.subprogramSpecification()
@@ -141,7 +138,8 @@ class Parser:
         self.sequenceOfStatements()
         self.accept(Token.END, "'end' expected")
         if self.token.code == Token.ID:
-            self.token = self.scanner.nextToken()
+            entry = self.findId()
+            self.acceptRole(self, entry, SymbolEntry.PROC, "must be a procedure name")
         self.accept(Token.SEMI, "semicolon expected")
 
     def subprogramSpecification(self):
@@ -159,79 +157,12 @@ class Parser:
         self.accept(Token.R_PAR, "')' expected")
 
     def parameterSpecification(self):
-        self.identifierList()
-        # self.setRole(list, SymbolEntry.PARAM)
+        list = self.identifierList()
+        self.setRole(list, SymbolEntry.PARAM)
         self.accept(Token.COLON, "':' expected")
         self.mode()
-        self.name()
-        
-
-    def name(self):
-        self.accept(Token.ID, "identifier expected")
-        if self.token.code == Token.L_PAR:
-            self.indexedComponent()
-
-
-    def indexedComponent(self):
-        self.accept(Token.L_PAR, "Left parenthesis expected")
-        self.expression()
-        while self.token.code == Token.COMMA:
-            self.token = self.scanner.nextToken()
-            self.expression()
-        self.accept(Token.R_PAR, "right parenthesis expected")
-
-
-    def expression(self):
-        self.relation()
-        if self.token.code == Token.AND:
-            while self.token.code == Token.AND:
-                self.token = self.scanner.nextToken()
-                self.relation()
-        elif self.token.code == Token.OR:
-            while self.token.code == Token.OR:
-                self.token = self.scanner.nextToken()
-                self.relation()
-
-    def simpleExpression(self):
-        if self.token.code in self.addingOperator:
-            self.token = self.scanner.nextToken()
-        self.term()
-        while self.token.code in self.addingOperator:
-            self.token = self.scanner.nextToken()
-            self.term()
-
-    def term(self):
-        self.factor()
-        while self.token.code in self.multiplyingOperator:
-            self.token = self.scanner.nextToken()
-            self.factor()
-
-    def factor(self):
-        self.primary()
-        if self.token.code == Token.EXPO:
-            self.token = self.scanner.nextToken()
-            self.primary()
-        elif self.token.code == Token.NOT:
-            self.token = self.scanner.nextToken()
-            self.primary()
-
-    def primary(self):
-        if (self.token.code == Token.INT) or (self.token.code == Token.CHAR):
-            self.token = self.scanner.nextToken()
-        elif self.token.code == Token.ID:
-            self.name()
-        elif self.token.code == Token.L_PAR:
-            self.token = self.scanner.nextToken()
-            self.expression()
-            self.accept(Token.R_PAR, "')' expected")
-        else:
-            self.fatalError("error in primary")
-
-    def relation(self):
-        self.simpleExpression()
-        if self.token.code in self.relationalOperator:
-            self.token = self.scanner.nextToken()
-            self.simpleExpression()
+        entry = self.findId()
+        self.acceptRole(self, entry, SymbolEntry.TYPE, "must be a type name")
 
     def mode(self):
         if self.token.code == Token.IN:
@@ -256,25 +187,22 @@ class Parser:
             self.fatalError("error in declaration part")
 
     def numberOrObjectDeclaration(self):
-        self.identifierList()
+        list = self.identifierList()
         self.accept(Token.COLON, "':' expected")
         if self.token.code == Token.CONST:
+            self.setRole(self, list, SymbolEntry.CONST)
             self.token = self.scanner.nextToken()
             self.accept(Token.GETS, "':=' expected")
             self.expression()
         else:
+            self.setRole(self, list, SymbolEntry.VAR)
             self.typeDefinition()
-        self.accept(Token.SEMI, "';' expected")
-
-    def identifierList(self):
-        self.accept(Token.ID, "identifier expected")
-        while self.token.code == Token.COMMA:
-            self.token = self.scanner.nextToken()
-            self.accept(Token.ID, "identifier expected")
+        self.accept(Token.SEMI, "semicolon expected")
 
     def typeDeclaration(self):
         self.accept(Token.TYPE, "'type' expected")
-        self.accept(Token.ID, "identifier expected")
+        entry = self.enterId()
+        self.setRole(self, entry, SymbolEntry.TYPE)
         self.accept(Token.IS, "'is' expected")
         self.typeDefinition()
         self.accept(Token.SEMI, "semicolon expected")
@@ -287,13 +215,15 @@ class Parser:
         elif self.token.code == Token.RANGE:
             self.range()
         elif self.token.code == Token.ID:
-            self.name()
+            entry = self.findId()
+            self.acceptRole(entry, SymbolEntry.TYPE, "must be a type name")
         else:
             self.fatalError("error in type definition")
 
     def enumerationTypeDefinition(self):
         self.accept(Token.L_PAR, "left parenthesis expected")
-        self.identifierList()
+        list = self.identifierList()
+        self.setRole(self, list, SymbolEntry.CONST)
         self.accept(Token.R_PAR, "right parenthesis expected")
 
     def arrayTypeDefinition(self):
@@ -305,7 +235,66 @@ class Parser:
             self.index()
         self.accept(Token.R_PAR, "right parenthesis expected")
         self.accept(Token.OF, "'of' expected")
-        self.name()
+        entry = self.findId()
+        self.acceptRole(self, entry, SymbolEntry.TYPE, "must be a type name")
+
+    def index(self):
+        if self.token.code == Token.RANGE:
+            self.range()
+        elif self.token.code == self.token.ID:
+            entry = self.findId()
+            self.acceptRole(self, entry, SymbolEntry.TYPE, "must be a type name")
+        else:
+            self.fatalError("error in index")
+
+    def range(self):
+        self.accept(Token.RANGE, "'range' expected")
+        self.simpleExpression()
+        self.accept(Token.THRU, "dot dot expected")
+        self.simpleExpression()
+
+    def identifierList(self):
+        list = self.enterId()
+        while self.token.code == Token.COMMA:
+            self.token = self.scanner.nextToken()
+            self.appendEntry(self, list, self.enterId())
+        return list
+
+    def sequenceOfStatements(self):
+        self.statement()
+        while self.token.code in self.statementHandles:
+            self.statement()
+
+    def statement(self):
+        if self.token.code == Token.ID:
+            self.assignmentOrCallStatement()
+        elif self.token.code == Token.EXIT:
+            self.exitStatement()
+        elif self.token.code == Token.IF:
+            self.ifStatement()
+        elif self.token.code == Token.NULL:
+            self.nullStatement()
+        elif (self.token.code == Token.WHILE) or (self.token.code == Token.LOOP):
+            self.loopStatement()
+        else:
+            self.fatalError("error in statement")
+
+    def nullStatement(self):
+        self.accept(Token.NULL, "'null' expected")
+        self.accept(Token.SEMI, "semicolon expected")
+
+    def loopStatement(self):
+        if self.token.code == Token.WHILE:
+            self.iterationScheme()
+        self.accept(Token.LOOP, "'loop' expected")
+        self.sequenceOfStatements()
+        self.accept(Token.END, "'end' expected")
+        self.accept(Token.LOOP, "'loop' expected")
+        self.accept(Token.SEMI, "semicolon expected")
+
+    def iterationScheme(self):
+        self.accept(Token.WHILE, "'while' expected")
+        self.condition()
 
     def ifStatement(self):
         self.accept(Token.IF, "'if' expected")
@@ -331,18 +320,91 @@ class Parser:
         if self.token.code == Token.WHEN:
             self.token = self.scanner.nextToken()
             self.condition()
-
         self.accept(Token.SEMI, "semicolon expected")
 
     def assignmentOrCallStatement(self):
-        self.name()
+        entry = self.name()
         if self.token.code == Token.GETS:
+            self.acceptRole(self, entry, self.leftNames, "must be a parameter of variable name")
             self.token = self.scanner.nextToken()
             self.expression()
-        elif self.token.code == Token.L_PAR:
-            self.actualParameterPart()
+        else:
+            self.acceptRole(self, entry, SymbolEntry.PROC, "must be a procedure name")
         self.accept(Token.SEMI, "semicolon expected")
 
+    def condition(self):
+        self.expression()
+
+    def expression(self):
+        self.relation()
+        if self.token.code == Token.AND:
+            while self.token.code == Token.AND:
+                self.token = self.scanner.nextToken()
+                self.relation()
+        elif self.token.code == Token.OR:
+            while self.token.code == Token.OR:
+                self.token = self.scanner.nextToken()
+                self.relation()
+
+    def relation(self):
+        self.simpleExpression()
+        if self.token.code in self.relationalOperator:
+            self.token = self.scanner.nextToken()
+            self.simpleExpression()
+
+    def simpleExpression(self):
+        if self.token.code in self.addingOperator:
+            self.token = self.scanner.nextToken()
+        self.term()
+        while self.token.code in self.addingOperator:
+            self.token = self.scanner.nextToken()
+            self.term()
+
+    def term(self):
+        self.factor()
+        while self.token.code in self.multiplyingOperator:
+            self.token = self.scanner.nextToken()
+            self.factor()
+
+    def factor(self):
+        self.primary()
+        if self.token.code == Token.EXPO:
+            self.token = self.scanner.nextToken()
+            self.primary()
+        else:
+            self.primary()
+            if self.token.code == Token.EXPO:
+                self.token = self.scanner.nextToken()
+                self.primary()
+
+    def primary(self):
+        if (self.token.code == Token.INT) or (self.token.code == Token.CHAR):
+            self.token = self.scanner.nextToken()
+        elif self.token.code == Token.ID:
+            entry = self.name()
+            self.acceptRole(self, entry, self.rightNames, "must be a parameter, variable or constant name")
+        elif self.token.code == Token.L_PAR:
+            self.token = self.scanner.nextToken()
+            self.expression()
+            self.accept(Token.R_PAR, "')' expected")
+        else:
+            self.fatalError("error in primary")
+
+    def name(self):
+        entry = self.findId()
+        if self.token.code == Token.L_PAR:
+            self.indexedComponent()
+        return entry
+
+    def indexedComponent(self):
+        self.accept(Token.L_PAR, "Left parenthesis expected")
+        self.expression()
+        while self.token.code == Token.COMMA:
+            self.token = self.scanner.nextToken()
+            self.expression()
+        self.accept(Token.R_PAR, "right parenthesis expected")
+
+    # no longer used
     def actualParameterPart(self):
         self.accept(Token.L_PAR, "left parenthesis expected")
         self.expression()
@@ -351,56 +413,3 @@ class Parser:
             self.expression()
 
         self.accept(Token.R_PAR, "right parenthesis expected")
-
-    def condition(self):
-        self.expression()
-
-    def iterationScheme(self):
-        self.accept(Token.WHILE, "'while' expected")
-        self.condition()
-
-    def loopStatement(self):
-        if self.token.code == Token.WHILE:
-            self.iterationScheme()
-        self.accept(Token.LOOP, "'loop' expected")
-        self.sequenceOfStatements()
-        self.accept(Token.END, "'end' expected")
-        self.accept(Token.LOOP, "'loop' expected")
-        self.accept(Token.SEMI, "semicolon expected")
-
-    def nullStatement(self):
-        self.accept(Token.NULL, "'null' expected")
-        self.accept(Token.SEMI, "semicolon expected")
-
-    def index(self):
-        if self.token.code == Token.RANGE:
-            self.range()
-        elif self.token.code == self.token.ID:
-            self.name()
-        else:
-            self.fatalError("error in index")
-
-    def range(self):
-        self.accept(Token.RANGE, "'range' expected")
-        self.simpleExpression()
-        self.accept(Token.THRU, "dot dot expected")
-        self.simpleExpression()
-
-    def sequenceOfStatements(self):
-        self.statement()
-        while self.token.code in self.statementHandles:
-            self.statement()
-
-    def statement(self):
-        if self.token.code == Token.ID:
-            self.assignmentOrCallStatement()
-        elif self.token.code == Token.EXIT:
-            self.exitStatement()
-        elif self.token.code == Token.IF:
-            self.ifStatement()
-        elif self.token.code == Token.NULL:
-            self.nullStatement()
-        elif (self.token.code == Token.WHILE) or (self.token.code == Token.LOOP):
-            self.loopStatement()
-        else:
-            self.fatalError("error in statement")
