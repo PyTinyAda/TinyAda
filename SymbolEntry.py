@@ -1,3 +1,5 @@
+from Parser import Parser
+
 class SymbolEntry:
 
    NONE = 0
@@ -8,40 +10,40 @@ class SymbolEntry:
    VAR = 5
 
    def __init__(self, id):
-      this.name = id
-      this.role = NONE
-      this.next = null
+      self.name = id
+      self.role = NONE
+      self.next = None
    
 
-   def toString(mode):
+   def toString(self, mode):
       if mode == Parser.ROLE :
-         return "Name: " + this.name + "\n" + "Role: " + this.roleToString()
+         return "Name: " + self.name + "\n" + "Role: " + self.roleToString()
       
       else:
-         return "Name: " + this.name
+         return "Name: " + self.name
  
 
    # "role" is an integer defined above
-   def setRole(r):
+   def setRole(self, r):
       this.role = r
-      if this.next != null:
-         this.next.setRole(r)
+      if self.next != None:
+         self.next.setRole(r)
 
 
-   def append(entry):
-      if this.next == null:
-         this.next = entry
+   def append(self, entry):
+      if self.next == None:
+         self.next = entry
       else:
-         this.next.append(entry)
+         self.next.append(entry)
 
 
-   def roleToString():
+   def roleToString(self):
       s = ""
-      if this.role==this.NONE: s = "NONE"  
-      elif this.role==this.CONST: s = "CONSTANT"  
-      elif this.role==this.PARAM: s = "PARAMETER" 
-      elif this.role==this.PROC: s = "PROCEDURE" 
-      elif this.role==this.TYPE:  s = "TYPE"     
-      elif this.role==this.VAR:   s = "VARIABLE"  
-      else: s = "None"
+      if self.role == self.NONE: s = "NONE"  
+      elif self.role == self.CONST: s = "CONSTANT"  
+      elif self.role == self.PARAM: s = "PARAMETER" 
+      elif self.role == self.PROC: s = "PROCEDURE" 
+      elif self.role == self.TYPE:  s = "TYPE"     
+      elif self.role == self.VAR:   s = "VARIABLE"  
+      else: s = "NONE"
       return s
