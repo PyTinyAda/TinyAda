@@ -60,10 +60,12 @@ class Parser:
 
     def acceptRole(self, s, expected, errorMessage):
         if self.mode == Parser.ROLE:
-            if s is None or (s.role != SymbolEntry.NONE and s.role != expected):
-                self.chario.putError(errorMessage)
-            elif s is None or (s.role != SymbolEntry.NONE and not (s.role in expected)):
-                self.chario.putError(errorMessage)
+            if (str(type(expected)) == "<class 'int>"):
+                if s is None or (s.role != SymbolEntry.NONE and s.role != expected):
+                    self.chario.putError(errorMessage)
+            else :
+                if s is None or (s.role != SymbolEntry.NONE and not (s.role in expected)):
+                    self.chario.putError(errorMessage)
 
     def setRole(self, s, role):
         if self.mode == Parser.ROLE and s is not None:
@@ -380,7 +382,6 @@ class Parser:
             self.factor()
 
     def factor(self):
-        self.primary()
         if self.token.code == Token.NOT:
             self.token = self.scanner.nextToken()
             self.primary()
@@ -391,7 +392,7 @@ class Parser:
                 self.primary()
 
     def primary(self):
-        #print(self.token.code)
+        # print(self.token.code)
         if (self.token.code == Token.INT) or (self.token.code == Token.CHAR):
             # int 검출 token id 랑 매칭하기
             self.token = self.scanner.nextToken()
@@ -402,8 +403,6 @@ class Parser:
             self.token = self.scanner.nextToken()
             self.expression()
             self.accept(Token.R_PAR, "')' expected")
-        elif self.token.code == Token.SEMI:
-            return
         else:
             self.fatalError("error in primary")
 
