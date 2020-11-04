@@ -54,6 +54,9 @@ class Parser:
         self.statementHandles.add(Token.LOOP)
         self.statementHandles.add(Token.NULL)
         self.statementHandles.add(Token.WHILE)
+        self.leftNames.add(SymbolEntry.PARAM)
+        self.leftNames.add(SymbolEntry.VAR)
+        self.rightNames.add(SymbolEntry.CONST)
 
     def acceptRole(self, s, expected, errorMessage):
         if self.mode == Parser.ROLE:
@@ -388,8 +391,9 @@ class Parser:
                 self.primary()
 
     def primary(self):
+        #print(self.token.code)
         if (self.token.code == Token.INT) or (self.token.code == Token.CHAR):
-            # int 검출 token id 랑 매칭하기 
+            # int 검출 token id 랑 매칭하기
             self.token = self.scanner.nextToken()
         elif self.token.code == Token.ID:
             entry = self.name()
@@ -398,6 +402,8 @@ class Parser:
             self.token = self.scanner.nextToken()
             self.expression()
             self.accept(Token.R_PAR, "')' expected")
+        elif self.token.code == Token.SEMI:
+            return
         else:
             self.fatalError("error in primary")
 
