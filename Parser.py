@@ -11,8 +11,6 @@ class Parser:
     SCOPE = 1
     ROLE = 2
 
-    token = Token()
-
     addingOperator = set()
     multiplyingOperator = set()
     relationalOperator = set()

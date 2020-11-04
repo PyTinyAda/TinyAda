@@ -2,7 +2,7 @@ from Token import Token
 from CharIO import CharIO
 
 class Scanner:
-    token = Token()
+    
     ch = ''
     keywords = {}
     singleOps = {}
@@ -199,8 +199,11 @@ class Scanner:
                     self.getSingleOp()
                     if self.token.code == Token.ERROR:
                         self.chario.putError("unrecognized symbol")
+            
             if self.token.code == Token.ERROR:
                 continue
+            else : 
+                break
             
         return self.token
 
