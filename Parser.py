@@ -378,7 +378,7 @@ class Parser:
 
     def factor(self):
         self.primary()
-        if self.token.code == Token.EXPO:
+        if self.token.code == Token.NOT:
             self.token = self.scanner.nextToken()
             self.primary()
         else:
