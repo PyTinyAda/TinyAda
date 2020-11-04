@@ -63,7 +63,7 @@ class Parser:
             if (str(type(expected)) == "<class 'int>"):
                 if s is None or (s.role != SymbolEntry.NONE and s.role != expected):
                     self.chario.putError(errorMessage)
-            else :
+            elif (str(type(expected)) == "<class 'dict'>") :
                 if s is None or (s.role != SymbolEntry.NONE and not (s.role in expected)):
                     self.chario.putError(errorMessage)
 
@@ -163,8 +163,8 @@ class Parser:
         self.accept(Token.R_PAR, "')' expected")
 
     def parameterSpecification(self):
-        list = self.identifierList()
-        self.setRole(list, SymbolEntry.PARAM)
+        lst = self.identifierList()
+        self.setRole(lst, SymbolEntry.PARAM)
         self.accept(Token.COLON, "':' expected")
         self.mode()
         entry = self.findId()
@@ -193,15 +193,15 @@ class Parser:
             self.fatalError("error in declaration part")
 
     def numberOrObjectDeclaration(self):
-        list = self.identifierList()
+        lst = self.identifierList()
         self.accept(Token.COLON, "':' expected")
         if self.token.code == Token.CONST:
-            self.setRole(list, SymbolEntry.CONST)
+            self.setRole(lst, SymbolEntry.CONST)
             self.token = self.scanner.nextToken()
             self.accept(Token.GETS, "':=' expected")
             self.expression()
         else:
-            self.setRole(list, SymbolEntry.VAR)
+            self.setRole(lst, SymbolEntry.VAR)
             self.typeDefinition()
         self.accept(Token.SEMI, "semicolon expected")
 
@@ -228,8 +228,8 @@ class Parser:
 
     def enumerationTypeDefinition(self):
         self.accept(Token.L_PAR, "left parenthesis expected")
-        list = self.identifierList()
-        self.setRole(list, SymbolEntry.CONST)
+        lst = self.identifierList()
+        self.setRole(lst, SymbolEntry.CONST)
         self.accept(Token.R_PAR, "right parenthesis expected")
 
     def arrayTypeDefinition(self):
@@ -260,11 +260,11 @@ class Parser:
         self.simpleExpression()
 
     def identifierList(self):
-        list = self.enterId()
+        lst = self.enterId()
         while self.token.code == Token.COMMA:
             self.token = self.scanner.nextToken()
-            self.appendEntry(list, self.enterId())
-        return list
+            self.appendEntry(lst, self.enterId())
+        return lst
 
     def sequenceOfStatements(self):
         self.statement()
@@ -420,12 +420,4 @@ class Parser:
             self.expression()
         self.accept(Token.R_PAR, "right parenthesis expected")
 
-    # no longer used
-    def actualParameterPart(self):
-        self.accept(Token.L_PAR, "left parenthesis expected")
-        self.expression()
-        while self.token.code == Token.COMMA:
-            self.token = self.scanner.nextToken()
-            self.expression()
-
-        self.accept(Token.R_PAR, "right parenthesis expected")
+   
