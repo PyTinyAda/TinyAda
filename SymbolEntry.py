@@ -15,6 +15,7 @@ class SymbolEntry:
    
 
    def toString(self, mode):
+      import Parser
       if mode == Parser.ROLE :
          return "Name: " + self.name + "\n" + "Role: " + self.roleToString()
       
