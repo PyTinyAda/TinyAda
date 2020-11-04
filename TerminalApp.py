@@ -19,8 +19,8 @@ class TerminalApp:
         self.chario = CharIO(stream)
         self.scanner = Scanner(self.chario)
         
-        # #self.testChario()
-        # #self.testScanner()
+        # self.testChario()
+        # self.testScanner()
 
         ### Scope checking
         # self.parser = Parser(self.chario,self.scanner, Parser.SCOPE)    
@@ -48,7 +48,7 @@ class TerminalApp:
             self.parser.parse()
         except:
             self.chario.reportErrors()
-        self.chario.reportErrors()
+        
 
 def main():
     TerminalApp()
