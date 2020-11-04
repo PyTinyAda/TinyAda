@@ -108,10 +108,10 @@ class Parser:
     def enterId(self):
         entry = None
         if self.token.code == Token.ID:
-            if self.token.mode == Parser.SCOPE or self.mode == Parser.mode:
+            if self.mode == Parser.SCOPE or self.mode == Parser.ROLE:
                 entry = self.table.enterSymbol(self.token.string)
         else:
-            self.fatalError("identifier expected")
+            self.fatalError("identifier expected1")
         self.token = self.scanner.nextToken()
         return entry
 
@@ -121,7 +121,7 @@ class Parser:
             if self.mode == Parser.SCOPE or self.mode == Parser.ROLE:
                 entry = self.table.findSymbol(self.token.string)
         else:
-            self.fatalError("identifier expected")
+            self.fatalError("identifier expected2")
         self.token = self.scanner.nextToken()
         return entry
 
@@ -137,6 +137,7 @@ class Parser:
         self.accept(Token.BEGIN, "'begin' expected")
         self.sequenceOfStatements()
         self.accept(Token.END, "'end' expected")
+        self.exitScope()
         if self.token.code == Token.ID:
             entry = self.findId()
             self.acceptRole(entry, SymbolEntry.PROC, "must be a procedure name")
@@ -144,7 +145,9 @@ class Parser:
 
     def subprogramSpecification(self):
         self.accept(Token.PROC, "'procedure' expected")
-        self.accept(Token.ID, "identifier expected")
+        entry = self.enterId()
+        self.setRole(entry, SymbolEntry.PROC)
+        self.enterScope()
         if self.token.code == Token.L_PAR:
             self.formalPart()
 
@@ -276,8 +279,17 @@ class Parser:
             self.nullStatement()
         elif (self.token.code == Token.WHILE) or (self.token.code == Token.LOOP):
             self.loopStatement()
+        elif self.token.code == Token.PRINT:
+            self.printStatement()
         else:
             self.fatalError("error in statement")
+
+    def printStatement(self):
+        self.accept(Token.PRINT, "'print' expected")
+        self.scanner.nextToken()
+        self.accept(Token.L_PAR, "'(' expected")
+        self.chario.print(self.scanner.nextToken())
+        self.accept(Token.R_PAR, "')' expected")
 
     def nullStatement(self):
         self.accept(Token.NULL, "'null' expected")
