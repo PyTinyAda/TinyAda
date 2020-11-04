@@ -27,7 +27,7 @@ class SymbolTable:
             return None
         else:
             s = SymbolEntry(id)
-            table.append({id:s})
+            table.update({id: s})
             return s
     
     def findSymbol(self, id):
