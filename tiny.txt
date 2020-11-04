@@ -28,4 +28,5 @@ procedure TEST is
         beginI : integer;
         beginI := 3;
         INIT_MATRIX(I, A);
+        print(A)
         end TEST;

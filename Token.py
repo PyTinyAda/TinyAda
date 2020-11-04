@@ -47,6 +47,8 @@ class Token:
     TYPE = 44
     WHEN = 45
     WHILE = 46
+    PRINT = 47
+    MATRIX = 48
 
     code = 0
 
@@ -73,4 +75,4 @@ class Token:
              "END", "EOF", "EQ", "ERROR", "EXIT", "EXPO", "GE", "GETS", "GT", "ID", "IF", "IN",
              "INT", "IS", "LE", "LT", "LOOP", "L_PAR", "MINUS", "MOD", "MUL", "NE", "NOT", "NULL",
              "OF", "OR", "OUT", "PERIOD", "PLUS", "PROC", "R_PAR", "RANGE", "RECORD", "SEMI",
-             "THEN", "THRU", "TYPE", "WHEN", "WHILE"]
+             "THEN", "THRU", "TYPE", "WHEN", "WHILE", "PRINT"]
