@@ -1,4 +1,3 @@
-from Parser import Parser
 
 class SymbolEntry:
 
@@ -11,7 +10,7 @@ class SymbolEntry:
 
    def __init__(self, id):
       self.name = id
-      self.role = NONE
+      self.role = self.NONE
       self.next = None
    
 
