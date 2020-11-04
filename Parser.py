@@ -379,6 +379,7 @@ class Parser:
 
     def primary(self):
         if (self.token.code == Token.INT) or (self.token.code == Token.CHAR):
+            # int 검출 token id 랑 매칭하기 
             self.token = self.scanner.nextToken()
         elif self.token.code == Token.ID:
             entry = self.name()

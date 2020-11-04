@@ -18,12 +18,15 @@ class TerminalApp:
             return
         self.chario = CharIO(stream)
         self.scanner = Scanner(self.chario)
-        self.parser = Parser(self.chario,self.scanner, Parser.SCOPE)    
-        #self.testChario()
-        #self.testScanner()
-        self.testParser()
+        
+        # #self.testChario()
+        # #self.testScanner()
 
-        self.parser = Parser(self.chario,self.scanner, Parser.ROLE)    
+        ### Scope checking
+        # self.parser = Parser(self.chario,self.scanner, Parser.SCOPE)    
+
+        ## Role checking
+        self.parser = Parser(self.chario, self.scanner, Parser.ROLE)    
         self.testParser()
 
 
