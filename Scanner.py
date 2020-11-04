@@ -200,9 +200,7 @@ class Scanner:
                     if self.token.code == Token.ERROR:
                         self.chario.putError("unrecognized symbol")
             
-            if self.token.code == Token.ERROR:
-                continue
-            else : 
+            if not self.token.code == Token.ERROR:
                 break
             
         return self.token
