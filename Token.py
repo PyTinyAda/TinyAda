@@ -58,7 +58,7 @@ class Token:
     # string seems to be used when this token represents a char, an identifier or a keyword
     string = ""
 
-    def __init__(self, newCode=None):
+    def __init__(self, newCode):
         self.code = newCode
         self.integer = 0
         self.string = ""
