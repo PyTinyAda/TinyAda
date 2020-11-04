@@ -1,4 +1,3 @@
-from Parser import Parser
 
 class SymbolEntry:
 
