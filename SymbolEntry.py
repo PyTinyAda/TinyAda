@@ -11,7 +11,7 @@ class SymbolEntry:
 
    def __init__(self, id):
       self.name = id
-      self.role = NONE
+      self.role = self.NONE
       self.next = None
    
 
@@ -25,7 +25,7 @@ class SymbolEntry:
 
    # "role" is an integer defined above
    def setRole(self, r):
-      this.role = r
+      self.role = r
       if self.next != None:
          self.next.setRole(r)
 
