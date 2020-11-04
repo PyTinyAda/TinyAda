@@ -59,9 +59,7 @@ class Parser:
 
     def acceptRole(self, s, expected, errorMessage):
         if self.mode == Parser.ROLE:
-            if self.mode == Parser.ROLE and s is not None:
-                s.setRole(self.role)
-            elif s is None or (s.role != SymbolEntry.NONE and s.role != expected):
+            if s is None or (s.role != SymbolEntry.NONE and s.role != expected):
                 self.chario.putError(errorMessage)
             elif s is None or (s.role != SymbolEntry.NONE and not (s.role in expected)):
                 self.chario.putError(errorMessage)
