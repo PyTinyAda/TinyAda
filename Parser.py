@@ -63,7 +63,7 @@ class Parser:
             if (str(type(expected)) == "<class 'int>"):
                 if s is None or (s.role != SymbolEntry.NONE and s.role != expected):
                     self.chario.putError(errorMessage)
-            elif (str(type(expected)) == "<class 'dict'>") :
+            elif (str(type(expected)) == "<class 'dict'>") or isinstance(expected, set) :
                 if s is None or (s.role != SymbolEntry.NONE and not (s.role in expected)):
                     self.chario.putError(errorMessage)
 
@@ -291,7 +291,8 @@ class Parser:
         self.accept(Token.PRINT, "'print' expected")
         self.scanner.nextToken()
         self.accept(Token.L_PAR, "'(' expected")
-        self.chario.print(self.scanner.nextToken())
+        entry = self.name(self.Scanner.nextToken())
+        print(entry)
         self.accept(Token.R_PAR, "')' expected")
 
     def nullStatement(self):
