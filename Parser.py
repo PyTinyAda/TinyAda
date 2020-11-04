@@ -380,7 +380,6 @@ class Parser:
             self.factor()
 
     def factor(self):
-        self.primary()
         if self.token.code == Token.NOT:
             self.token = self.scanner.nextToken()
             self.primary()
